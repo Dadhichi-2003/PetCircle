@@ -1,6 +1,11 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+
+import HomePage from './pages/HomePage'
+import Login from './components/Login'
+import SignUp from './components/SignUp'
+import { Route, Routes } from 'react-router-dom'
+
+
 // import './App.css'
 
 function App() {
@@ -8,11 +13,11 @@ function App() {
 
   return (
     <>
-     <div className='flex'> 
-        <div>Hello</div>
-        <div>Bharat</div>
-     </div>
-     
+     <Routes>
+        <Route path="/" element={<HomePage/>}/>
+        <Route path='/login' element={<Login/>}/>
+        <Route path='/signup' element={<SignUp/>}/>
+     </Routes>
     </>
   )
 }

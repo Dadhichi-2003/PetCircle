@@ -4,11 +4,12 @@
 
 
 @theme {
-    --color-primary : #0D1B2A;
-    --color-secondary : #1B263B;
-    --color-light : #E0E1DD;
-    --color-semilight:#778DA9;
-    --color-mid : #415A77; 
+    --color-primary: #0D1B2A; /* Deep Navy */
+    --color-secondary: #1B263B; /* Dark Blue */
+    --color-light: #E0E1DD; /* Soft Light */
+    --color-semilight: #778DA9; /* Muted Blue */
+    --color-mid: #415A77; /* Medium Blue */
+    --color-accent: #E76F51; /* Soft Orange (for buttons & highlights) */
     --font-roboto: "Roboto", sans-serif; 
 }
 

@@ -28,7 +28,7 @@ const Login = () => {
     <>
     <Navbar/>
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
-      <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-md">
+      <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-2xl">
         <h2 className="text-2xl font-bold text-gray-900 text-center mb-6">Login</h2>
 
         <form onSubmit={handleSubmit(submitHandler)} className="space-y-4">

@@ -5,6 +5,7 @@ import { IoPawSharp } from "react-icons/io5";
 import { FaHome } from "react-icons/fa";
 import { LuMessagesSquare } from "react-icons/lu";
 import { FaCalendarDays } from "react-icons/fa6";
+import { TbSquareRoundedNumber1Filled, TbSquareRoundedNumber2Filled, TbSquareRoundedNumber3Filled, TbSquareRoundedNumber4Filled, TbSquareRoundedNumber5Filled } from 'react-icons/tb';
 
 const Features = () => {
   return (
@@ -33,34 +34,39 @@ const Features = () => {
         <div className='ml-12'>
           <p className="font-bold text-xl my-5">How It works</p>
           <div className='flex mb-4'>
-            <span className='How_works'>1</span>
+          <TbSquareRoundedNumber1Filled  className='size-12  mr-2 fill-primary'/>
+            {/* <span className='How_works'>1</span> */}
             <div>
               <span className='font-bold text-lg'>Create your profile</span>
               <p className=''>Tell us about your self and what you'r looking for in pet.</p>
             </div>
           </div>
           <div className='flex mb-4'>
-            <span className='How_works'>2</span>
+          <TbSquareRoundedNumber2Filled className='size-12  mr-2 fill-primary' />
+            {/* <span className='size-8'></span> */}
             <div>
               <span className='font-bold text-lg'>Browse Available Pets</span>
               <p className=''>Explore our database of pets looking for their forever homes</p>
             </div>
           </div>
           <div className='flex mb-4'>
-            <span className='How_works'>3</span>
+          <TbSquareRoundedNumber3Filled className='size-12  mr-2 fill-primary' />
+            {/* <span className='How_works'>3</span> */}
             <div>
               <span className='font-bold text-lg'>Connect & Adopt</span>
               <p className=''>Schedule meets and complete the adoption process safely.</p>
             </div>
           </div>
           <div className='flex mb-4'>
-            <span className='How_works'>4</span>
+          <TbSquareRoundedNumber4Filled className='size-12 mr-2 fill-primary' />
+            {/* <span className='How_works'></span> */}
             <div>
               <span className='font-bold text-lg'>Connect with other Pet-owners</span>
               <p className=''>Communicate with other pet-owners and gain knowledge.</p>
             </div>
           </div>  <div className='flex mb-4'>
-            <span className='How_works'>5</span>
+          <TbSquareRoundedNumber5Filled className='size-12  mr-2 fill-primary' />
+            {/* <span className='How_works'>5</span> */}
             <div>
               <span className='font-bold text-lg'>Get Advice from Experts & Trainers</span>
               <p className=''>Connect with animal experts and give healthy life to your pet.</p>
@@ -68,7 +74,7 @@ const Features = () => {
           </div>
 
         </div>
-        <div className='ml-12 md:flex flex-col mt-6 mr-12' >
+        <div className='ml-12 md:flex flex-col mt-9 mr-12' >
           <p className="font-bold text-xl mb-6 ">Key Features</p>
           <div className='space-y-1 mb-10'>
             <FaHome className='size-8' />
@@ -87,7 +93,7 @@ const Features = () => {
           </div>
         </div>
       </section>
-      <section className="py-16 bg-gray-50">
+      <section className="py-16  bg-gray-50">
       <div className="max-w-6xl mx-auto text-center px-6">
         <h2 className="text-3xl font-bold text-gray-900 mb-8">Our Impact</h2>
 

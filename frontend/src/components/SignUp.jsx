@@ -48,7 +48,7 @@ const SignUp = () => {
     <>
     <Navbar/>
     <div className="flex items-center justify-center min-h-screen bg-gray-100 px-4">
-      <div className="w-full max-w-md bg-white p-6 rounded-lg shadow-lg">
+      <div className="w-full max-w-md bg-white p-6 rounded-lg shadow-2xl">
         <h2 className="text-center text-2xl font-semibold mb-4">Sign Up</h2>
         <form onSubmit={handleSubmit(submitHandler)}>
           {/* Username */}

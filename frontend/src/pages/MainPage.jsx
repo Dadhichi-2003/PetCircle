@@ -1,14 +1,14 @@
-import React from 'react'
-import Navbar2 from '../components/Navbar2'
-import SideBar from '../components/SideBar'
+import React from 'react';
+import Navbar2 from '../components/mainpageComp/Navbar2';
+import Feeds from '../components/mainpageComp/Feeds';
+
 
 const MainPage = () => {
   return (
-    <div>
+    <>
       <Navbar2/>
-      <SideBar />
-    </div>
-  )
-}
+    </>
+  );
+};
 
-export default MainPage
+export default MainPage;

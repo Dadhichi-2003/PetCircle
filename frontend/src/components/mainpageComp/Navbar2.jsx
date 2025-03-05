@@ -1,10 +1,27 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import logo from '../../assets/logo1.png'
-import { Link, Outlet } from 'react-router-dom'
+import { Link, Outlet, useParams } from 'react-router-dom'
 import { MdMessage } from "react-icons/md";
+import axios from 'axios';
 
 
 const Navbar2 = () => {
+
+    const[username,setUsername]=useState("");
+    const [email,setEmail]=useState("");
+
+    useEffect(()=>{
+ 
+            const storedUsername=localStorage.getItem("username");
+            const storedEmail = localStorage.getItem("email");
+            
+            if(storedEmail&&storedUsername){
+                setUsername(storedUsername)
+                setEmail(storedEmail);
+            }
+
+    },[])
+
     return (
         <>
             <div>
@@ -100,8 +117,8 @@ const Navbar2 = () => {
                                             >
                                                 <span className="sr-only">Open user menu</span>
                                                 <img
-                                                    className="w-8 h-8 rounded-full"
-                                                    src="https://flowbite.com/docs/images/people/profile-picture-5.jpg"
+                                                    className="w-12 h-10 rounded-full"
+                                                    src="https://images.pexels.com/photos/8963721/pexels-photo-8963721.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load"
                                                     alt="user photo"
                                                 />
                                             </button>
@@ -115,24 +132,24 @@ const Navbar2 = () => {
                                                     className="text-sm text-gray-900 dark:text-white"
                                                     role="none"
                                                 >
-                                                    Neil Sims
+                                                    {username}
                                                 </p>
                                                 <p
                                                     className="text-sm font-medium text-gray-900 truncate dark:text-gray-300"
                                                     role="none"
                                                 >
-                                                    neil.sims@flowbite.com
+                                                    {email}
                                                 </p>
                                             </div>
                                             <ul className="py-1" role="none">
                                                 <li>
-                                                    <a
-                                                        href="#"
+                                                    <Link
+                                                        to="profile"
                                                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
                                                         role="menuitem"
                                                     >
                                                         Dashboard
-                                                    </a>
+                                                    </Link>
                                                 </li>
                                                 <li>
                                                     <a
@@ -212,6 +229,24 @@ const Navbar2 = () => {
                                     </Link>
                                 </li>
                                 <li>
+                                    <Link
+                                        to="profile"
+                                        className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                                    >   
+                                        <MdMessage className="w-6 h-6" />
+                                        {/* <svg
+                                            className="shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                                            aria-hidden="true"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            fill="currentColor"
+                                            viewBox="0 0 20 18"
+                                        >
+                                            <path d="M14 2a3.963 3.963 0 0 0-1.4.267 6.439 6.439 0 0 1-1.331 6.638A4 4 0 1 0 14 2Zm1 9h-1.264A6.957 6.957 0 0 1 15 15v2a2.97 2.97 0 0 1-.184 1H19a1 1 0 0 0 1-1v-1a5.006 5.006 0 0 0-5-5ZM6.5 9a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9ZM8 10H5a5.006 5.006 0 0 0-5 5v2a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-2a5.006 5.006 0 0 0-5-5Z" />
+                                        </svg> */}
+                                        <span className="flex-1 ms-3 whitespace-nowrap">profile</span>
+                                    </Link>
+                                </li>
+                                <li>
                                     <a
                                         href="#"
                                         className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
@@ -273,7 +308,7 @@ const Navbar2 = () => {
                             </ul>
                         </div>
                     </aside>
-                    <div className="p-4 sm:ml-64">
+                    <div className="p-4 sm:ml-64  bg-primary">
                         <div className='p-4 mt-14'>
                         <Outlet/>
                         </div>

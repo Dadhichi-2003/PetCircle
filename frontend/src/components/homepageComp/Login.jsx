@@ -12,8 +12,9 @@ const Login = () => {
   const navigate = useNavigate();
 
   const submitHandler = async (data) => {
-
-    const login = await axios.post("/login", data)
+    
+    try{
+      const login = await axios.post("/login", data)
     if (login.status == 200) {
       toast.success('login succesfull !', {
         position: "top-center",
@@ -27,27 +28,45 @@ const Login = () => {
         transition: Zoom,
       
       });
+      console.log(login.data)
 
-      setTimeout(()=>{
-        navigate('/main')
-      },3000)
+      localStorage.setItem("id",login.data.data._id);
+      localStorage.setItem("role",login.data.data.role);
+      localStorage.setItem("username",login.data.data.username);
+      localStorage.setItem("email",login.data.data.email);
+      
 
+      if(login.data.data.role ==="User"){
+        setTimeout(()=>{
+          navigate('/main')
+        },3000)
+  
+      }
+      
       
     }
-    else {
-      toast.error('Invalid credentials,try again !', {
-        position: "top-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "dark",
-        transition: Zoom,
-      });
-    }
     
+  }
+    catch(error)
+    {
+        if(error.response && error.response.status === 404 ){
+          toast.error('Invalid credentials,try again !', {
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: false,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+            transition: Zoom,
+          });
+
+        }
+    }
+
+    
+
   };
 
   const validationSchema = {

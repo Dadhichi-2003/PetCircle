@@ -6,9 +6,16 @@ const app=express();
 app.use(cors())
 app.use(express.json())
 
-//routes
+
+
+
+//user routes
 const UserRoute = require("./src/routes/UserRoute")
 app.use(UserRoute);
+
+//profile routes
+const ProfileRoute = require("./src/routes/ProfileRoute");
+app.use("/profile",ProfileRoute);
 
 
 //db connection

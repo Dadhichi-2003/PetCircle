@@ -7,6 +7,7 @@ import MainPage from './pages/MainPage'
 import Feeds from './components/mainpageComp/Feeds'
 import Message from './components/mainpageComp/Message'
 import axios from 'axios'
+import Profile from './components/mainpageComp/Profile'
 
 
 // import './App.css'
@@ -24,6 +25,7 @@ function App() {
         <Route path='/main' element={<MainPage />}>
           <Route path='feeds' element={<Feeds />} />
           <Route path='messages' element={<Message />} />
+          <Route path='profile' element={<Profile/>} />
 
         </Route>
 

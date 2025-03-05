@@ -17,6 +17,7 @@ const signUpUser = async(req,res)=>{
     catch(err){
         res.status(500).json({
             message:"user not registered",
+            error:err
            
         })
     }
@@ -29,7 +30,7 @@ const loginUser = async(req,res)=>{
         const email= req.body.email;
         const password= req.body.password;
 
-        const findUserByEmail = await userModel.findOne({email:email});
+        const findUserByEmail = await userModel.findOne({email:email})
         if(findUserByEmail != null){
             const isMatch= bcrypt.compareSync(password,findUserByEmail.password);
 
@@ -63,10 +64,10 @@ const loginUser = async(req,res)=>{
 
 const getAllUser=async(req,res)=>{
     try{
-        const allUser = await userModel.find()
+        const allUser = await userModel.find().populate("petData")
 
         res.status(200).json({
-            message:"user fetched successfull",
+            message:"users fetched successfull",
             allUser,
         })
     }
@@ -78,8 +79,25 @@ const getAllUser=async(req,res)=>{
     }
 }
 
+const getSingleUser = async(req,res) =>{
+
+    try{
+        const user =  await userModel.findById(req.params.id).populate("petData")
+        res.status(200).json({
+            message:"user fetched...",
+            user
+        })
+    }catch(err){
+        res.status(404).json({
+            message:"user not found",
+        })
+    }
+
+}
+
 module.exports={
     signUpUser,
     loginUser,
-    getAllUser
+    getAllUser,
+    getSingleUser
 }

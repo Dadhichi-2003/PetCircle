@@ -9,6 +9,7 @@ const profileSchema = new mongoose.Schema(
     petWeight: { type: Number, required: true },
     medicalHistory: { type: String, required: true },
     profilePic: { type: String, default: null },
+    userdata:{type:mongoose.Schema.Types.ObjectId ,ref:"User"}
   },
   { timestamps: true }
 );

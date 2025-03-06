@@ -37,6 +37,7 @@ const SignUp = () => {
   const submitHandler = async(data) => {
     console.log(data)
     try{
+     
       const user = await axios.post("/signup",data)
       console.log(user.data)
     if(user.status===201){
@@ -52,6 +53,9 @@ const SignUp = () => {
         theme: "dark",
         transition: Bounce,
         });
+
+     
+
       
         setTimeout(()=>{
           navigate('/login')

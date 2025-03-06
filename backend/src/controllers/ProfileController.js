@@ -31,7 +31,20 @@ const getAllProfiles = async (req, res) => {
 };
 
 
-
+const getPetProfileById = async(req,res)=>{
+  try{
+    const pet = await profileModel.findById(req.params.id).populate("userdata");
+    res.status(200).json({
+      message:"pet found",
+      pet
+    })
+  }catch(err){
+    res.status(404).json({
+      message:"not found",
+      err,
+    })
+  }
+}
 
 
 
@@ -40,4 +53,5 @@ const getAllProfiles = async (req, res) => {
 module.exports = {
   getAllProfiles,
   addprofile,
+  getPetProfileById,
 };

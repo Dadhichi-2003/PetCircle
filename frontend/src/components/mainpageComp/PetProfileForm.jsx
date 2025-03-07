@@ -33,10 +33,10 @@ const PetProfileForm = () => {
        
       }
 
-
+      localStorage.setItem("profilePic",response.data.data.profilePic)
       localStorage.setItem("petId",response.data.data._id)
       setTimeout(()=>{
-        navigate("/profile")
+        navigate("/main/profile")
       },2000)
     } catch (error) {
       toast.error("Error creating profile", {

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import logo from '../../assets/logo1.png'
 import { Link, Outlet, useParams } from 'react-router-dom'
 import { MdMessage } from "react-icons/md";
+import { CgProfile } from "react-icons/cg";
 import axios from 'axios';
 
 
@@ -9,12 +10,12 @@ const Navbar2 = () => {
 
     const[username,setUsername]=useState("");
     const [email,setEmail]=useState("");
-
+    const profilePic = localStorage.getItem("profilePic")
     useEffect(()=>{
  
             const storedUsername=localStorage.getItem("username");
             const storedEmail = localStorage.getItem("email");
-            
+       
             if(storedEmail&&storedUsername){
                 setUsername(storedUsername)
                 setEmail(storedEmail);
@@ -118,7 +119,7 @@ const Navbar2 = () => {
                                                 <span className="sr-only">Open user menu</span>
                                                 <img
                                                     className="w-12 h-10 rounded-full"
-                                                    src="https://images.pexels.com/photos/8963721/pexels-photo-8963721.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load"
+                                                    src={`${profilePic}`}
                                                     alt="user photo"
                                                 />
                                             </button>
@@ -233,7 +234,7 @@ const Navbar2 = () => {
                                         to="profile"
                                         className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
                                     >   
-                                        <MdMessage className="w-6 h-6" />
+                                        <CgProfile className="w-6 h-6" />
                                         {/* <svg
                                             className="shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                                             aria-hidden="true"

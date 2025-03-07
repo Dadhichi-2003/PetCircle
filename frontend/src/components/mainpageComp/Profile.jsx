@@ -118,7 +118,7 @@ const Profile = () => {
 
       {/* About Section */}
       {about && (
-        <div className="bg-gray-800 text-white p-6 rounded-lg shadow-md border mt-4">
+        <div className="bg-gray-800 text-white p-6 rounded-lg shadow-md border mt-4 h-100">
           <h1 className="text-3xl mb-5">About {data?.pet?.userdata?.username}</h1>
           <div className="flex flex-col sm:flex-row gap-6">
             <div className="space-y-2">

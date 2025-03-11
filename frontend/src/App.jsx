@@ -24,8 +24,10 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path='/login' element={<Login />} />
         <Route path='/signup' element={<SignUp />} />
-        <Route path="" element={<PrivateRoutes/>}>
+        <Route path="" element={<PrivateRoutes />}>
           <Route path='/main' element={<MainPage />}>
+          //index element feed
+            <Route index element={<Feeds />} />
             <Route path='feeds' element={<Feeds />} />
             <Route path='messages' element={<Message />} />
             <Route path='profile' element={<Profile />} >

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import { Bounce, toast, ToastContainer } from "react-toastify";
@@ -12,40 +12,11 @@ const PetProfileForm = () => {
     formState: { errors },
   } = useForm();
 
+
+ 
+
   const submitHandler = async (data) => {
-
-    
-    try {
-      const id = localStorage.getItem("id");
-      
-      data.userdata = id;
-
-      const response = await axios.post("/profile/addpro", data);
-      if (response.status === 201) {
-        toast.success("Pet Profile Created!", {
-          position: "top-center",
-          autoClose: 3000,
-          theme: "dark",
-          transition: Bounce,
-        });
-        console.log(response.data)
-
-       
-      }
-
-      localStorage.setItem("profilePic",response.data.data.profilePic)
-      localStorage.setItem("petId",response.data.data._id)
-      setTimeout(()=>{
-        navigate("/main/profile")
-      },2000)
-    } catch (error) {
-      toast.error("Error creating profile", {
-        position: "top-center",
-        autoClose: 3000,
-        theme: "dark",
-        transition: Bounce,
-      });
-    }
+    console.log(data)
   };
 
   return (

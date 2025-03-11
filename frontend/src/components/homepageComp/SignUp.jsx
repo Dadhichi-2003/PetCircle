@@ -40,6 +40,7 @@ const SignUp = () => {
      
       const user = await axios.post("/signup",data)
       console.log(user.data)
+
     if(user.status===201){
     
       toast.success('User Registered!', {
@@ -53,9 +54,6 @@ const SignUp = () => {
         theme: "dark",
         transition: Bounce,
         });
-
-     
-
       
         setTimeout(()=>{
           navigate('/login')
@@ -110,7 +108,7 @@ const SignUp = () => {
         theme="dark"
         transition={Bounce}
       />
-      <div className="flex items-center justify-center min-h-screen bg-gray-100 px-4 pt-10">
+      <div className="flex items-center justify-center min-h-screen bg-gray-100 ">
         <div className="w-full max-w-lg bg-white p-6 rounded-lg shadow-2xl">
           <h2 className="text-center text-2xl font-semibold mb-4">Sign Up</h2>
           <form onSubmit={handleSubmit(submitHandler)}>
@@ -151,15 +149,7 @@ const SignUp = () => {
             </div>
 
             <div className="grid grid-cols-2 gap-4 mt-4">
-              <div>
-                <label className="block font-medium">Mobile Number</label>
-                <input
-                  type="text"
-                  className="w-full p-2 border border-gray-300 rounded-lg"
-                  {...register("mobile", validationSchema.mobileNumValidator)}
-                />
-                <p className="text-red-500 text-sm">{errors.mobile?.message}</p>
-              </div>
+             
 
               <div>
                 <label className="block font-medium">Password</label>
@@ -170,9 +160,8 @@ const SignUp = () => {
                 />
                 <p className="text-red-500 text-sm">{errors.password?.message}</p>
               </div>
-            </div>
 
-            <div className="mt-4">
+              <div className="">
               <label className="block font-medium">Confirm Password</label>
               <input
                 type="password"
@@ -181,6 +170,9 @@ const SignUp = () => {
               />
               <p className="text-red-500 text-sm">{errors.confirmPassword?.message}</p>
             </div>
+            </div>
+
+           
 
             {/* Expert Fields (Appears Only If Expert is Selected) */}
             {role === "Expert" && (
@@ -208,6 +200,15 @@ const SignUp = () => {
                     <p className="text-red-500 text-sm">{errors.experience?.message}</p>
                   </div>
                 </div>
+                <div>
+                <label className="block font-medium">Mobile Number</label>
+                <input
+                  type="text"
+                  className="w-full p-2 border border-gray-300 rounded-lg"
+                  {...register("contact", validationSchema.mobileNumValidator)}
+                />
+                <p className="text-red-500 text-sm">{errors.mobile?.message}</p>
+              </div>
 
                 <div className="mt-4">
                   <label className="block font-medium">Services Offered</label>

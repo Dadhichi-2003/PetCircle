@@ -23,12 +23,10 @@ const Profile = () => {
     setPost(false);
   };
 
+
+
   const getPetDetails = async () => {
-    const id = localStorage.getItem("petId");
-    const res = await axios.get("/profile/profile/" + id);
-    setData(res.data);
-    console.log(res.data)
-    
+  
   };
 
   useEffect(() => {

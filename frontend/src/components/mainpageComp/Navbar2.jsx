@@ -27,7 +27,7 @@ const Navbar2 = () => {
         <>
             <div>
                 <>
-                    <nav className="fixed top-0 z-50 w-full bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
+                    <nav className="fixed top-0 z-50 w-full bg-secondary border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
                         <div className="px-3 py-3 lg:px-5 lg:pl-3">
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center justify-start rtl:justify-end">
@@ -68,7 +68,7 @@ const Navbar2 = () => {
                                     <form className="w-full max-w-xl max-sm:hidden sm:max-w-64 md:max-w-sm lg:max-w-md xl:max-w-xl mx-auto">
                                         <label
                                             htmlFor="default-search"
-                                            className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
+                                            className="mb-2 text-sm font-medium text-gray-100 sr-only dark:text-white"
                                         >
                                             Search
                                         </label>
@@ -93,7 +93,7 @@ const Navbar2 = () => {
                                             <input
                                                 type="search"
                                                 id="default-search"
-                                                className="block w-full p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                                className="block w-full p-2 ps-10 text-sm text-gray-100 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                                 placeholder="Search for pet profiles..."
                                                 required=""
                                             />
@@ -125,18 +125,18 @@ const Navbar2 = () => {
                                             </button>
                                         </div>
                                         <div
-                                            className="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-sm shadow-sm dark:bg-gray-700 dark:divide-gray-600"
+                                            className="z-50 hidden my-4 text-base list-none bg-secondary divide-y divide-gray-100 rounded-sm shadow-sm dark:bg-gray-700 dark:divide-gray-600"
                                             id="dropdown-user"
                                         >
                                             <div className="px-4 py-3" role="none">
                                                 <p
-                                                    className="text-sm text-gray-900 dark:text-white"
+                                                    className="text-sm text-gray-100 dark:text-white"
                                                     role="none"
                                                 >
                                                     {username}
                                                 </p>
                                                 <p
-                                                    className="text-sm font-medium text-gray-900 truncate dark:text-gray-300"
+                                                    className="text-sm font-medium text-gray-100 truncate dark:text-gray-300"
                                                     role="none"
                                                 >
                                                     {email}
@@ -188,18 +188,18 @@ const Navbar2 = () => {
                     </nav>
                     <aside
                         id="logo-sidebar"
-                        className="fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform -translate-x-full bg-white border-r border-gray-200 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700"
+                        className="fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform -translate-x-full bg-secondary border-r border-gray-200 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700"
                         aria-label="Sidebar"
                     >
-                        <div className="h-full px-7 pb-4 overflow-y-auto bg-white dark:bg-gray-800">
+                        <div className="h-full px-7 pb-4 overflow-y-auto bg-secondary text-gray-50 dark:bg-gray-800">
                             <ul className="space-y-2 font-medium">
                                 <li>
                                     <Link
                                         to="feeds"
-                                        className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                                        className="flex items-center p-2 text-gray-100 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
                                     >
                                         <svg
-                                            className="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                                            className="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-100 dark:group-hover:text-white"
                                             aria-hidden="true"
                                             xmlns="http://www.w3.org/2000/svg"
                                             fill="currentColor"
@@ -214,11 +214,11 @@ const Navbar2 = () => {
                                 <li>
                                     <Link
                                         to="messages"
-                                        className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                                        className="flex items-center p-2 text-gray-100 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
                                     >   
                                         <MdMessage className="w-6 h-6" />
                                         {/* <svg
-                                            className="shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                                            className="shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-100 dark:group-hover:text-white"
                                             aria-hidden="true"
                                             xmlns="http://www.w3.org/2000/svg"
                                             fill="currentColor"
@@ -232,11 +232,11 @@ const Navbar2 = () => {
                                 <li>
                                     <Link
                                         to="profile"
-                                        className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                                        className="flex items-center p-2 text-gray-100 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
                                     >   
                                         <CgProfile className="w-6 h-6" />
                                         {/* <svg
-                                            className="shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                                            className="shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-100 dark:group-hover:text-white"
                                             aria-hidden="true"
                                             xmlns="http://www.w3.org/2000/svg"
                                             fill="currentColor"
@@ -250,10 +250,10 @@ const Navbar2 = () => {
                                 <li>
                                     <a
                                         href="#"
-                                        className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                                        className="flex items-center p-2 text-gray-100 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
                                     >
                                         <svg
-                                            className="shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                                            className="shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-100 dark:group-hover:text-white"
                                             aria-hidden="true"
                                             xmlns="http://www.w3.org/2000/svg"
                                             fill="currentColor"
@@ -270,10 +270,10 @@ const Navbar2 = () => {
                                 <li>
                                     <a
                                         href="#"
-                                        className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                                        className="flex items-center p-2 text-gray-100 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
                                     >
                                         <svg
-                                            className="shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                                            className="shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-100 dark:group-hover:text-white"
                                             aria-hidden="true"
                                             xmlns="http://www.w3.org/2000/svg"
                                             fill="currentColor"
@@ -290,10 +290,10 @@ const Navbar2 = () => {
                                 <li>
                                     <a
                                         href="#"
-                                        className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                                        className="flex items-center p-2 text-gray-100 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
                                     >
                                         <svg
-                                            className="shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                                            className="shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-100 dark:group-hover:text-white"
                                             aria-hidden="true"
                                             xmlns="http://www.w3.org/2000/svg"
                                             fill="currentColor"

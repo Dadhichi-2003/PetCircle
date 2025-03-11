@@ -1,30 +1,45 @@
 const express = require ("express");
 const mongoose = require("mongoose")
 const cors =require("cors")
+const cookieParser = require("cookie-parser")
+const dotenv = require("dotenv")
 
+
+
+
+dotenv.config({});
 const app=express();
-app.use(cors())
+
+PORT=process.env.PORT || 5000
+
+
+//middleware
+
 app.use(express.json())
-
-
-
+app.use(cookieParser())
+app.use(express.urlencoded({extended:true}))
+const corsOptions ={
+    origin:'http://localhost:5173',
+    Credentials:true
+}
+app.use(cors(corsOptions))
 
 //user routes
 const UserRoute = require("./src/routes/UserRoute")
 app.use(UserRoute);
 
-//profile routes
-const ProfileRoute = require("./src/routes/ProfileRoute");
-app.use("/profile",ProfileRoute);
+//pet routes
 
+const PetRoutes=require("./src/routes/PetRoutes")
+app.use("/pet",PetRoutes)
 
 //db connection
-mongoose.connect("mongodb://127.0.0.1:27017/petcircle").then(()=>{
+mongoose.connect(process.env.MONGO_URL).then(()=>{
     console.log("DataBase Connected")
 })
 
 //server connection
-const PORT=3000
+
 app.listen(PORT,()=>{
     console.log("server is running on port",PORT)
 })

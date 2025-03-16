@@ -33,6 +33,11 @@ app.use(UserRoute);
 const PetRoutes=require("./src/routes/PetRoutes")
 app.use("/pet",PetRoutes)
 
+//post routes
+
+const PostRoutes = require("./src/routes/PostRoutes");
+app.use("/posts",PostRoutes)
+
 //db connection
 mongoose.connect(process.env.MONGO_URL).then(()=>{
     console.log("DataBase Connected")

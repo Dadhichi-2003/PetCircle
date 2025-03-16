@@ -37,6 +37,15 @@ const userSchema = new Schema(
       type:Schema.Types.ObjectId,
       ref:"User"
     }],
+
+    posts:{
+      type:Schema.Types.ObjectId,
+      ref:"Post"
+    },
+    profilePicture : {
+      type:String,
+
+    },
     //for experts only  
 
     expertise: { type: String, 

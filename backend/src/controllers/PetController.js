@@ -31,17 +31,25 @@ const addPetProfile = async (req, res) => {
         // Create pet object
         const petData = {
           owner: req.body.owner,
-          petName: req.body.petName,
+          petname: req.body.petname,
           species: req.body.species,
           breed: req.body.breed,
           age: req.body.age,
-          gender: req.body.gender,
           medicalHistory: req.body.medicalHistory,
-          profilePic: profilePicUrl
+          profilePic: profilePicUrl,
+          adopted:req.body.adopted,
+          posts:req.body.posts
         };
   
         const newPet = await petModel.create(petData);
         await newPet.populate("owner") // populate ni agal await joeye
+
+        await userModel.findByIdAndUpdate(
+          req.body.owner,
+          { $push: { pets: newPet._id } },
+          { new: true }
+        );
+       
   
         res.status(201).json({
           message: "Pet profile created successfully",
@@ -108,6 +116,8 @@ const addPetProfile = async (req, res) => {
         if (bio) user.bio = bio;
         if (location) user.location = location;
   
+
+        //
         // Handle profile picture update (if provided)
         if (req.file) {
           const cloudinaryResponse = await cloudinaryUtil.uploadFileToCloudinary(req.file);

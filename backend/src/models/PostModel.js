@@ -3,17 +3,16 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const postSchema= new Schema({
-    author:{
+    pet:{
         type:Schema.Types.ObjectId,
-        ref:"User"
-    },
-    content:{
+        ref:"Pet"
+    },//post belong to pet
+    caption:{
         type:String,
-        
     },
-    images:[{
+    media:[{
         type:String,
-        require:true
+        required:true
     }],
     likes:[{
         type:Schema.Types.ObjectId,

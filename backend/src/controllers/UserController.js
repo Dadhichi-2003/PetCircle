@@ -5,11 +5,12 @@ const multer = require("multer");
 const jwt = require("jsonwebtoken");
 
 const cloudinaryUtil = require("../utils/CloudinaryUtil");
+const UserModel = require("../models/UserModel");
 
 //storage engine
 
 const storage = multer.diskStorage({
-  destination: "./uploads",
+  
   filename: function (req, file, cb) {
     cb(null, file.originalname);
   },
@@ -19,9 +20,49 @@ const storage = multer.diskStorage({
 const upload = multer({
   storage: storage,
   //file filter:pmg/jpg tec
-}).single("image");
+}).single("profilePic");
+
+const upadateProfilePic = async(req,res)=>{
+  upload(req, res, async (err) => {
+        if (err) {
+          return res.status(500).json({ message: "File upload failed", error: err.message });
+        }
+    
+        try {
+          // Upload file to Cloudinary 
+          let profilePic= "";
+          if (req.file) {
+            const cloudinaryResponse = await cloudinaryUtil.uploadFileToCloudinary(req.file);
+            profilePic = cloudinaryResponse.secure_url;
+          }
+          const userId = req.params.id
+          const profile= await UserModel.findById(userId);
+                  if (!profile) {
+                    return res.status(404).json({ message: "Profile not found" });
+                  }
+
+          if(profile){
+            profile.profilePic = profilePic
+          }
+          
+          profile.save()
+            
+          return res.status(200).json({
+            message:"profile Pic updated succesfully",
+            profilePic
+          })
+        }catch(err){
+
+          res.status(500).json({
+            message:"profile pic not updated",
+            error:err.message
+          })
+        }
 
 
+
+})
+}
 
 
 const signUpUser = async (req, res) => {
@@ -68,7 +109,7 @@ const loginUser = async (req, res) => {
       { expiresIn: "1d" }
     );
 
-    // ✅ Set the cookie before sending response
+    // Set the cookie before sending response
     res.cookie("token", token, {
       httpOnly: true,
       sameSite: "strict",
@@ -132,6 +173,8 @@ const getProfileById = async (req, res) => {
     });
   }
 };
+
+
 
 
 const getSuggestedUsers = async (req, res) => {
@@ -228,5 +271,6 @@ module.exports = {
   logout,
   getSuggestedUsers,
   followOrUnfollow,
+  upadateProfilePic
   // addProfileWithFile,
 };

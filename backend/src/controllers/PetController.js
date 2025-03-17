@@ -89,7 +89,7 @@ const addPetProfile = async (req, res) => {
       }
   
       try {
-        const { petId, petName, species, breed, age, gender, medicalHistory, userId, username, bio, location } = req.body;
+        const { petId, petname, species, breed, age, gender, medicalHistory, userId, username, bio, location } = req.body;
   
         // Check if Pet exists
         const pet = await petModel.findById(petId);
@@ -104,7 +104,7 @@ const addPetProfile = async (req, res) => {
         }
   
         // Update pet details if provided
-        if (petName) pet.petName = petName;
+        if (petname) pet.petname = petname;
         if (species) pet.species = species;
         if (breed) pet.breed = breed;
         if (age) pet.age = age;

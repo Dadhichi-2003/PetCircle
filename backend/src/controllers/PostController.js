@@ -7,6 +7,7 @@ const multer = require("multer");
 const cloudinaryUtil = require("../utils/CloudinaryUtil");
 const PostModel = require("../models/PostModel");
 const PetModel = require("../models/PetModel");
+const CommentModel = require("../models/CommentModel");
 
 
 
@@ -90,19 +91,18 @@ const getAllPost = async (req, res) => {
 };
 
 
-//--------------------------------------------------- ahiyathi krvanu 6 -------------------------------------------------------------------
-
-const getUserPost = async (req, res) => {
+//single pet ki posts deikhane ke liye
+const getPetPost = async (req, res) => {
   try {
-    const authorId = req.id;
-    const posts = await Post.find({ author: authorId })
+    const petId = req.params.id;
+    const posts = await Post.find({ pet: petId })
       .sort({ createdAt: -1 })
-      .populate({ path: "author", select: "username profilePicture" })
+      .populate({ path: "pet", select: " petname profilePic" })
       .populate({
-        path: "Comment",
+        path: "comments",
         sort: { createdAt: -1 },
         populate: {
-          path: "author",
+          path: "user",
           select: "username profilePicture",
         },
       });
@@ -112,20 +112,21 @@ const getUserPost = async (req, res) => {
   }
 };
 
+
+
 const likePost = async (req, res) => {
   try {
     const likeKrneWalaUserKiId = req.id;
     const postId = req.params.id;
-    const post = await Post.findById(postId);
-    if (!post)
-      return res
-        .status(404)
-        .json({ message: "Post not found", success: false });
+   
+    const post = await Post.findByIdAndUpdate(
+      postId,
+      { $addToSet: { likes: likeKrneWalaUserKiId } }, // Add user ID to likes array
+      { new: true } // Returns the updated document
+    );
 
-    await post.updateOne({ $addToSet: { likes: likeKrneWalaUserKiId } });
-    await post.save();
-
-    return res.status(200).json({ message: "Post liked", success: true });
+    
+    return res.status(200).json({ message: "Post liked", success: true ,post});
   } catch (error) {
     console.log(error);
   }
@@ -133,7 +134,7 @@ const likePost = async (req, res) => {
 
 const dislikePost = async (req, res) => {
   try {
-    const likeKrneWalaUserKiId = req.id;
+    const UserId = req.id; //jo person dislike krne vala he uski id ayegi
     const postId = req.params.id;
     const post = await Post.findById(postId);
     if (!post)
@@ -141,7 +142,7 @@ const dislikePost = async (req, res) => {
         .status(404)
         .json({ message: "Post not found", success: false });
 
-    await post.updateOne({ $pull: { likes: likeKrneWalaUserKiId } });
+    await post.updateOne({ $pull: { likes: UserId } });
     await post.save();
 
     return res.status(200).json({ message: "Post disliked", success: true });
@@ -153,23 +154,23 @@ const dislikePost = async (req, res) => {
 const addComment = async (req, res) => {
   try {
     const postId = req.params.id;
-    const commentKrneWalaUserKiId = req.id;
-    const { text } = req.body;
+    const UserId  = req.id;  // jo comment krega uski id ayegi
+    const { content } = req.body;
 
-    if (!text)
+    if (!content)
       return res
         .status(400)
         .json({ message: "Text is required", success: false });
 
     const comment = await Comment.create({
-      text,
-      author: commentKrneWalaUserKiId,
+      user: UserId,
       post: postId,
+      content:content
     });
 
     await comment.populate({
-      path: "author",
-      select: "username profilePicture",
+      path: "user",
+      select: "username profilePic",
     });
     await Post.findByIdAndUpdate(postId, { $push: { comments: comment._id } });
 
@@ -181,12 +182,33 @@ const addComment = async (req, res) => {
   }
 };
 
+const deleteComment = async(req,res)=>{
+
+  try{
+    const commentId= req.params.id
+    const delCom = await CommentModel.findByIdAndDelete(commentId)
+    return res.status(200).json({
+      message:"comment deleted succesfully",
+      delCom
+    })
+
+  }catch(err){
+
+    res.status(404).json({
+      message:"comment not found",
+      error:err
+    })
+  }
+  
+
+}
+
 const getCommentsOfPost = async (req, res) => {
   try {
     const postId = req.params.id;
     const comments = await Comment.find({ post: postId }).populate(
-      "author",
-      "username profilePicture"
+      "user",
+      "username profilePic"
     );
 
     return res.status(200).json({ success: true, comments });
@@ -198,18 +220,20 @@ const getCommentsOfPost = async (req, res) => {
 const deletePost = async (req, res) => {
   try {
     const postId = req.params.id;
-    const authorId = req.id;
+    const petId = req.id; //pet id jiski post post delete krni he
 
     const post = await Post.findById(postId);
     if (!post)
       return res
         .status(404)
         .json({ message: "Post not found", success: false });
-    if (post.author.toString() !== authorId)
-      return res.status(403).json({ message: "Unauthorized" });
+
+
+    // if (post.author.toString() !== authorId)
+    //   return res.status(403).json({ message: "Unauthorized" }); //sir ne puvanu kevi rite krvu?
 
     await Post.findByIdAndDelete(postId);
-    await userModel.findByIdAndUpdate(authorId, { $pull: { posts: postId } });
+    await PetModel.findByIdAndUpdate( petId , { $pull: { posts: postId } });
     await Comment.deleteMany({ post: postId });
 
     return res.status(200).json({ success: true, message: "Post deleted" });
@@ -221,10 +245,11 @@ const deletePost = async (req, res) => {
 module.exports = {
   addNewPost,
   getAllPost,
-  getUserPost,
+  getPetPost,
   likePost,
   dislikePost,
   addComment,
   getCommentsOfPost,
   deletePost,
+  deleteComment
 };

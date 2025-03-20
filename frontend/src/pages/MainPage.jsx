@@ -1,13 +1,17 @@
 import React from 'react';
-import Navbar2 from '../components/mainpageComp/Navbar2';
+
 import SideBar from '../components/mainpageComp/SideBar';
+import { Outlet } from 'react-router-dom';
 
 
 
 const MainPage = () => {
   return (
     <>
-      <Navbar2/>
+      <SideBar/>
+      <div className='flex justify-center items-center  w-full' >
+        <Outlet/>
+      </div>
     </>
   );
 };

@@ -14,7 +14,7 @@ const Login = () => {
   const submitHandler = async (data) => {
     
     try{
-      const login = await axios.post("/login", data)
+      const login = await axios.post("/login", data,{ withCredentials: true })
     if (login.status == 200) {
       toast.success('login succesfull !', {
         position: "top-center",
@@ -31,9 +31,7 @@ const Login = () => {
       console.log(login.data)
 
       localStorage.setItem("id",login.data.data._id);
-      localStorage.setItem("role",login.data.data.role);
-      localStorage.setItem("username",login.data.data.username);
-      localStorage.setItem("email",login.data.data.email);
+      
       
 
       if(login.data.data.role ==="User"){
@@ -84,7 +82,7 @@ const Login = () => {
 
   return (
     <>
-      <Navbar />
+     
       <ToastContainer
         position="top-center"
         autoClose={5000}

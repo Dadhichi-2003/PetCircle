@@ -20,7 +20,7 @@ app.use(cookieParser())
 app.use(express.urlencoded({extended:true}))
 const corsOptions ={
     origin:'http://localhost:5173',
-    Credentials:true
+    credentials:true
 }
 app.use(cors(corsOptions))
 
@@ -37,6 +37,16 @@ app.use("/pet",PetRoutes)
 
 const PostRoutes = require("./src/routes/PostRoutes");
 app.use("/posts",PostRoutes)
+
+//message routes
+
+const MessageRoutes = require("./src/routes/MessageRoutes");
+app.use("/messages",MessageRoutes)
+
+//community routes
+
+const CommunityRoutes = require("./src/routes/CommunityRoutes");
+app.use("/community",CommunityRoutes)
 
 //db connection
 mongoose.connect(process.env.MONGO_URL).then(()=>{

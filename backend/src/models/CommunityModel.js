@@ -12,7 +12,6 @@ const communitySchema = new Schema({
         type:String,
         required:true
     },
-
     //members who joined 
     members:[{
         type:Schema.Types.ObjectId,
@@ -35,4 +34,5 @@ const communitySchema = new Schema({
 })
 
 
-module.export=mongoose.model("Community",communitySchema)
+module.exports=mongoose.model("Community",communitySchema);
+

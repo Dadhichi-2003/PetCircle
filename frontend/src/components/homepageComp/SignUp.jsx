@@ -81,7 +81,7 @@ const SignUp = () => {
 
   return (
     <>
-      <Navbar />
+      
       <ToastContainer
         position="top-center"
         autoClose={5000}

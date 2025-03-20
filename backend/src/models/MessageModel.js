@@ -11,7 +11,7 @@ const messageSchema = new Schema({
         type:Schema.Types.ObjectId,
         ref:"User"
     },
-    content:{
+    message:{
         type:String,
         require:true
     }

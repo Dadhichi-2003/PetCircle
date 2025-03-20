@@ -83,8 +83,8 @@ const Features = () => {
           </div>
           <div className='space-y-1 mb-8'>
             <LuMessagesSquare className='size-8' />
-            <p className='font-bold '>Pet Adoption</p>
-            <p>Find your perfect companion from our verified network of shelters and rescues</p>
+            <p className='font-bold '>Connect with others</p>
+            <p>Interact with other pet owners and found the new connections .</p>
           </div>
           <div className='space-y-1 mb-8'>
             <FaCalendarDays  className='size-8' />

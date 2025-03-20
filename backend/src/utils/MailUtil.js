@@ -7,7 +7,7 @@ const sendingMail = async(to,subject,text)=>{
         service:'gmail',
         auth:{
             user:"petcircle00@gmail.com",
-            pass:"lsqs fsue bakl vhwu"
+            pass:"dcse mant yyxz yuga"
         }
     });
 

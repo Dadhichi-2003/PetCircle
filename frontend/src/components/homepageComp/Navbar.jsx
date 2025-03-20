@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react'
 import logo from "../../assets/logo2.png"
 import { Link } from 'react-router-dom'
@@ -11,7 +12,7 @@ const Navbar = () => {
       <div className="flex items-center justify-center space-x-5 mr-5">
 
         <button className="text-primary hover:text-secondary"><Link to="/login">Login</Link></button>
-        <button className="bg-primary text-light px-4 py-2 rounded hover:bg-secondary ease-in"><Link to="/signup">Sign Up</Link></button>
+        <button className="bg-[#0D1B2A] text-[#E0E1DD] px-4 py-2 rounded hover:bg-secondary ease-in"><Link to="/signup">Sign Up</Link></button>
       </div>
     
 
@@ -20,3 +21,4 @@ const Navbar = () => {
 }
 
 export default Navbar
+

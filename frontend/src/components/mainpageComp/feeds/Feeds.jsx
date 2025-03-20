@@ -1,11 +1,12 @@
 import React from 'react'
+import Posts from './posts/Posts'
 
-const Feeds = () => {
+const Feed = () => {
   return (
-    <div>
-      <h1> Feeds</h1>
+    <div className='flex-1 my-8 flex flex-col items-center '>
+        <Posts/>
     </div>
   )
 }
 
-export default Feeds
+export default Feed

@@ -7,6 +7,10 @@ const jwt = require("jsonwebtoken");
 const cloudinaryUtil = require("../utils/CloudinaryUtil");
 const UserModel = require("../models/UserModel");
 
+const dotenv = require("dotenv")
+dotenv.config({});
+
+
 //storage engine
 
 const storage = multer.diskStorage({
@@ -93,7 +97,7 @@ const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    const findUserByEmail = await userModel.findOne({ email });
+    const findUserByEmail = await userModel.findOne({ email }).populate("pets");
     if (!findUserByEmail) {
       return res.status(404).json({ message: "Email not found" });
     }
@@ -235,6 +239,64 @@ const followOrUnfollow = async (req, res) => {
       console.log(error);
   }
 }
+const forgotPassword = async (req, res) => {
+  const email = req.body.email;
+  const foundUser = await userModel.findOne({ email: email });
+
+  if (foundUser) {
+    const token = jwt.sign(foundUser.toObject(), process.env.SECRET_KEY);
+    console.log(token);
+    const url = `http://localhost:5173/resetpass/${token}`;
+    const mailContent = `<html>
+                          <a href ="${url}">rest password</a>
+                          </html>`;
+    //email...
+    await mailUtil.sendingMail(foundUser.email, "reset password", mailContent);
+    res.json({
+      message: "reset password link sent to mail.",
+    });
+  } else {
+    res.json({
+      message: "user not found register first..",
+    });
+  }
+};
+
+const resetpassword = async (req, res) => {
+  try {
+    const { token, password } = req.body;
+
+    if (!token || !password) {
+      return res.status(400).json({ message: "Token and password are required" });
+    }
+
+    // Decode user from token
+    const userFromToken = jwt.verify(token, process.env.SECRET_KEY);
+    if (!userFromToken || !userFromToken._id) {
+      return res.status(401).json({ message: "Invalid or expired token" });
+    }
+
+    // Password encrypt
+    const salt = bcrypt.genSaltSync(10);
+    const hashedPassword = bcrypt.hashSync(password, salt);
+
+    // Update user password in DB
+    const updatedUser = await userModel.findByIdAndUpdate(userFromToken._id, {
+      password: hashedPassword,
+    }, { new: true });
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json({
+      message: "Password updated successfully",
+    });
+  } catch (error) {
+    console.error("Error in resetpassword:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
 
 
 // const addProfileWithFile = async (req, res) => {
@@ -271,6 +333,8 @@ module.exports = {
   logout,
   getSuggestedUsers,
   followOrUnfollow,
-  upadateProfilePic
+  upadateProfilePic,
+  forgotPassword,
+  resetpassword
   // addProfileWithFile,
 };

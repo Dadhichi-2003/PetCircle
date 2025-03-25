@@ -5,6 +5,8 @@ import Navbar from "./Navbar";
 import { LogIn } from "lucide-react";
 import { toast } from "sonner";
 import axios from "axios";
+import { useDispatch } from "react-redux";
+import { setAuthUser } from "@/redux/user/authSlice";
 
 const Login = () => {
   const {
@@ -13,15 +15,16 @@ const Login = () => {
     formState: { errors },
   } = useForm();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const submitHandler = async (data) => {
     try {
       const login = await axios.post("/login", data, { withCredentials: true });
       if (login.status == 200) {
         toast.success("login succesfull !");
-
+        console.log(login.data)
         localStorage.setItem("id", login.data.data._id);
-
+        dispatch(setAuthUser(login.data.data))
         if (login.data.data.role === "User") {
           setTimeout(() => {
             navigate("/main");
@@ -95,9 +98,15 @@ const Login = () => {
               Login
             </button>
           </form>
+          
+          <p className="text-start my-2">
+            <Link to="/forgetpassword" className=" text-blue-600 hover:underline   mt-4">
+              forget password?
+            </Link>
+            </p>
 
           {/* Signup Redirect */}
-          <p className="text-center text-gray-600 mt-4">
+          <p className="text-start text-gray-600 ">
             Don't have an account?{" "}
             <Link to="/signup" className="text-blue-600 hover:underline">
               Signup

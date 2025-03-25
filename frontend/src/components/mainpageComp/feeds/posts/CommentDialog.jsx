@@ -1,13 +1,23 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog'
+import store from '@/redux/store'
 import { MoreHorizontal } from 'lucide-react'
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
+import UserComment from './UserComment'
+import axios from 'axios'
 
 const CommentDialog = ({ open, setOpen }) => {
     const [text, setText] = useState("");
+    const { selectedPost } = useSelector(store => store.post);
+    const [comment, setComment] = useState([]);
+    const dispatch = useDispatch();
+    const { user } = useSelector(store => store.auth);
+    const{posts} = useSelector(store=>store.post)
+
 
     const changeEventHandler = (e) => {
         const inputText = e.target.value;
@@ -17,16 +27,43 @@ const CommentDialog = ({ open, setOpen }) => {
             setText("");
         }
     };
-    const sendMessageHandler = () => {
-        alert(text);    
+
+    useEffect(() => {
+        if (selectedPost) {
+            setComment(selectedPost.comments);
+        }
+    }, [selectedPost]);
+
+
+    const sendMessageHandler = async () => {
+        try {
+
+            const userId = user?._id;
+            const res = await axios.post(`posts/petpost/${selectedPost?._id}/addcomment`, { userId, content: text }, { withCredentials: true });
+
+            if (res.data) {
+                const updatedCommentData = [...comment, res.data.comment];
+
+                setComment(updatedCommentData);
+
+                const updatedPostData = posts.map(p => p._id === selectedPost._id ? { ...p, comments: updatedCommentData } : p)
+                dispatch(setPosts(updatedPostData));
+                toast.success("comment added");
+                setText("")
+            }
+        } catch (err) {
+            console.log(err);
+
+        }
     }
+
     return (
         <Dialog open={open}>
-            <DialogContent onInteractOutside={() => setOpen(false)} className="w-max-5xl h-100 p-0 flex flex-col">
+            <DialogContent onInteractOutside={() => setOpen(false)} className="w-max-5xl h-fit p-0 flex flex-col">
                 <div className='flex flex-1'>
                     <div className='w-1/2'>
                         <img
-                            src='https://images.pexels.com/photos/28898122/pexels-photo-28898122/free-photo-of-detailed-half-moon-against-black-night-sky.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load'
+                            src={selectedPost?.media}
                             alt="post_img"
                             className='w-full h-full object-cover rounded-l-lg'
                         />
@@ -36,12 +73,12 @@ const CommentDialog = ({ open, setOpen }) => {
                             <div className='flex gap-3 items-center'>
                                 <Link>
                                     <Avatar>
-                                        <AvatarImage src="" />
+                                        <AvatarImage src={selectedPost?.pet.profilePic} />
                                         <AvatarFallback>CN</AvatarFallback>
                                     </Avatar>
                                 </Link>
                                 <div>
-                                    <Link className='font-semibold text-xs'>username</Link>
+                                    <Link className='font-semibold text-xs'>{selectedPost?.pet.petname}</Link>
                                     {/* <span className='text-gray-600 text-sm'>Bio here...</span> */}
                                 </div>
                             </div>
@@ -61,15 +98,31 @@ const CommentDialog = ({ open, setOpen }) => {
                             </Dialog>
                         </div>
                         <hr />
+                        <div className='flex gap-3 items-center px-4 pt-3 '>
+                            <Link>
+                                <Avatar>
+                                    <AvatarImage src={selectedPost?.pet.profilePic} />
+                                    <AvatarFallback>CN</AvatarFallback>
+                                </Avatar>
+                            </Link>
+                            <div>
+                                <Link className='font-semibold text-xs'>{selectedPost?.pet.petname}</Link>
+                                <span className='text-gray-600 text-sm ml-2'>{selectedPost?.caption}</span>
+                            </div>
+                        </div>
                         <div className='flex-1 overflow-y-auto max-h-96 p-4'>
-                            comments
+                            {
+                                comment?.map((comment) => <UserComment key={comment._id} comment={comment} />)
+                            }
                         </div>
                         <div className='p-4'>
                             <div className='flex items-center gap-2'>
+
+
                                 <input type="text" value={text} onChange={changeEventHandler} placeholder='Add a comment...' className='w-full outline-none border text-sm border-gray-300 p-2 rounded' />
 
-                                
-                                <Button disabled={!text.trim()} onClick={sendMessageHandler} className="hover:bg-primary hover:text-light" variant="outline" >Send</Button>
+
+                                <Button onClick={sendMessageHandler} disabled={!text.trim()} className="hover:bg-primary hover:text-light" variant="outline" >Send</Button>
                             </div>
                         </div>
                     </div>

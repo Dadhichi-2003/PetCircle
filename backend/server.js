@@ -4,9 +4,6 @@ const cors =require("cors")
 const cookieParser = require("cookie-parser")
 const dotenv = require("dotenv")
 
-
-
-
 dotenv.config({});
 const app=express();
 
@@ -18,6 +15,7 @@ PORT=process.env.PORT || 5000
 app.use(express.json())
 app.use(cookieParser())
 app.use(express.urlencoded({extended:true}))
+
 const corsOptions ={
     origin:'http://localhost:5173',
     credentials:true
@@ -47,6 +45,11 @@ app.use("/messages",MessageRoutes)
 
 const CommunityRoutes = require("./src/routes/CommunityRoutes");
 app.use("/community",CommunityRoutes)
+
+//Adoption routes
+
+const AdoptionRoutes = require("./src/routes/AdoptionRoutes");
+app.use("/Adoption",AdoptionRoutes)
 
 //db connection
 mongoose.connect(process.env.MONGO_URL).then(()=>{

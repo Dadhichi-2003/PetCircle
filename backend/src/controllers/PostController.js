@@ -7,7 +7,7 @@ const multer = require("multer");
 const cloudinaryUtil = require("../utils/CloudinaryUtil");
 const PostModel = require("../models/PostModel");
 const PetModel = require("../models/PetModel");
-const CommentModel = require("../models/CommentModel");
+
 
 
 
@@ -44,16 +44,18 @@ const addNewPost = async (req, res) => {
       //creating post object
 
       const postData = {
-        pet: req.body.pet,
+        pet: req.body.petId,
         caption: req.body.caption,
         media: mediaUrls, // Store as an array of images
       };
 
       const addPost = await PostModel.create(postData);
-      await addPost.populate("pet");
+      // const populatedPost = await PostModel.findById(addPost._id).populate("pet");
+
+      await addPost.populate("pet")
 
       await PetModel.findByIdAndUpdate(
-        req.body.pet,
+        req.body.petId,
         { $push: { posts: addPost._id } },
         { new: true }
       );
@@ -75,13 +77,16 @@ const getAllPost = async (req, res) => {
   try {
     const posts = await Post.find()
       .sort({ createdAt: -1 })
-      .populate({ path: "pet", select: "petname profilePic" })
+      .populate({ path: "pet", select: "petname profilePic owner", populate: {
+        path: "owner", 
+        select: "username profilePic", 
+      }, })
       .populate({
         path: "comments",
         sort: { createdAt: -1 },
         populate: {
           path: "user",
-          select: "username profilePicture",
+          select: "username profilePic",
         },
       });
     return res.status(200).json({ posts, success: true });
@@ -97,7 +102,7 @@ const getPetPost = async (req, res) => {
     const petId = req.params.id;
     const posts = await Post.find({ pet: petId })
       .sort({ createdAt: -1 })
-      .populate({ path: "pet", select: " petname profilePic" })
+      .populate({ path: "pet", select: " petname profilePic owner" })
       .populate({
         path: "comments",
         sort: { createdAt: -1 },
@@ -186,7 +191,7 @@ const deleteComment = async(req,res)=>{
 
   try{
     const commentId= req.params.id
-    const delCom = await CommentModel.findByIdAndDelete(commentId)
+    const delCom = await Comment.findByIdAndDelete(commentId)
     return res.status(200).json({
       message:"comment deleted succesfully",
       delCom

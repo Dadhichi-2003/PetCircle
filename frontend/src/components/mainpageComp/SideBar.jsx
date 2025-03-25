@@ -3,11 +3,14 @@ import { Link, useNavigate } from "react-router-dom";
 import { FiMenu, FiHome, FiUser, FiMessageSquare, FiBell, FiUsers, FiHeart, FiLogOut } from "react-icons/fi";
 import logo from "../../assets/logo1.png"
 import axios from "axios"
+import { useDispatch } from "react-redux";
+import { setAuthUser, setPetData } from "@/redux/user/authSlice";
+import { setPosts, setSelectedPost } from "@/redux/post/postSlice";
 
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
-
+  const dispatch = useDispatch()
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -15,7 +18,10 @@ const Sidebar = () => {
       await axios.get("/logout", {
         withCredentials: true, // ✅ Ensure cookies are sent & cleared
       });
-
+      dispatch(setAuthUser(null))
+      dispatch(setSelectedPost(null));
+      dispatch(setPetData(null));
+      dispatch(setPosts([]))
       localStorage.removeItem("token"); // ✅ Clear stored token (if using JWT)
       localStorage.removeItem("id"); // ✅ Clear user ID
       navigate("/login"); // ✅ Redirect to login page
@@ -39,13 +45,13 @@ const Sidebar = () => {
     { name: "Profile", icon: <FiUser />, path: "profile" },
     { name: "Messages", icon: <FiMessageSquare />, path: "messages" },
     { name: "Notifications", icon: <FiBell />, path: "profile" },
-    { name: "Community", icon: <FiUsers />, path: "profile" },
+    { name: "Community", icon: <FiUsers />, path: "community" },
     { name: "Adoption", icon: <FiHeart />, path: "profile" },
     { name: "Logout", icon: <FiLogOut />, path: "/logout" , action: handleLogout },
   ];
 
   return (
-    <div className="flex relative">
+    <div className="flex relative ">
       {/* Overlay for Mobile */}
       {isOpen && (
         <div className="fixed inset-0 bg-black opacity-50 md:hidden" onClick={closeSidebar}></div>

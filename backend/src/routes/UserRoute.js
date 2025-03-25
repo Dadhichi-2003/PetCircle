@@ -10,6 +10,8 @@ routes.get("/logout",userController.logout);
 routes.get("/suggested",isAuthenticated,userController.getSuggestedUsers);
 routes.post("/followorunfollow/:id",isAuthenticated,userController.followOrUnfollow);
 routes.post("/updateprofilephoto/:id",isAuthenticated,userController.upadateProfilePic);
+routes.post("/user/forgotpassword",userController.forgotPassword);
+routes.post("/user/resetpassword",userController.resetpassword);
 // routes.post("/addprofile",userController.addProfileWithFile);
 
 module.exports= routes

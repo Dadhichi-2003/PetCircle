@@ -12,7 +12,7 @@ const petSchema = new Schema({
     age: { type: Number },
     profilePic: { type: String },
     medicalHistory:[{type:String,}],
-    adopted: { type: Boolean, default: false },
+    adoptionStatus: { type: Boolean, default: false },
     posts: [{ type: mongoose.Schema.Types.ObjectId, ref: "Post" }], // Posts related to pet
     
 

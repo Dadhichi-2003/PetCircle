@@ -139,10 +139,76 @@ const addPetProfile = async (req, res) => {
       }
     });
   };
+
+  const deletePetProfile = async (req, res) => {
+    try {
+      const { petId } = req.params;
+  
+      // Check if pet exists
+      const pet = await petModel.findById(petId);
+      if (!pet) {
+        return res.status(404).json({ message: "Pet not found" });
+      }
+  
+      // Remove pet reference from owner's pet list
+      await userModel.findByIdAndUpdate(
+        pet.owner,
+        { $pull: { pets: petId } },
+        { new: true }
+      );
+  
+      // Delete pet from database
+      await petModel.findByIdAndDelete(petId);
+  
+      res.status(200).json({
+        message: "Pet profile deleted successfully",
+        petId,
+      });
+    } catch (error) {
+      res.status(500).json({
+        message: "Error deleting pet profile",
+        error: error.message,
+      });
+    }
+  };
+  
+  const getPetProfileById = async (req, res) => {
+    try {
+      const { petId } = req.params;
+  
+      // Find pet by ID and populate owner details
+      const pet = await petModel.findById(petId).populate("owner", "username profilePic").populate("posts");
+  
+      if (!pet) {
+        return res.status(404).json({ message: "Pet not found" });
+      }
+  
+      res.status(200).json({
+        message: "Pet profile fetched successfully",
+        pet,
+      });
+    } catch (error) {
+      res.status(500).json({
+        message: "Error fetching pet profile",
+        error: error.message,
+      });
+    }
+  };
+  
+ 
+  
+  
+
+
+
+
   
 
 module.exports={
     addPetProfile,
     editProfile,
     getAllpets,
+    deletePetProfile,
+    getPetProfileById
+
 }

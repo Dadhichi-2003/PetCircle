@@ -9,8 +9,11 @@ import PetProfileForm from "./PetProfileForm";
 import { MoreHorizontal } from "lucide-react";
 import { setAuthUser } from "@/redux/user/authSlice";
 import { toast } from "sonner";
+import EditUserProfile from "./EditUserProfile";
 
 const Profile = () => {
+
+  const[open,setopen]=useState(false)
   const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
   const location = useLocation();
@@ -89,19 +92,34 @@ const Profile = () => {
               </div>
             </div>
             <div className="flex self-start">
-              <Dialog >
+              
+
+
+              <Dialog>
+                <DialogTrigger asChild>
+                <Button onClick={()=>{setopen(true)}} className="bg-gray-600 p-2 rounded cursor-pointer text-white my-5">Edit Profile</Button>
+                </DialogTrigger>
+              {
+                open && <DialogContent className="w-fit">
+                            <EditUserProfile open={open} setopen={setopen}/>
+                        </DialogContent>
+              }
+                
+              </Dialog>
+              {/* <Dialog >
                 <DialogTrigger asChild>
                   <MoreHorizontal className="cursor-pointer text-gray-600 hover:text-red-500 transition-colors" />
                 </DialogTrigger>
                 <DialogContent className="flex flex-col items-center text-sm text-center">
                   <button
                     className="text-gray-900 text-lg border-none hover:cursor-pointer"
-                    onClick={() => handleDeletePetProfile(pet._id)}
+                 
                   >
                     Edit Profile 
                   </button>
+                  
                 </DialogContent>
-              </Dialog>
+              </Dialog> */}
             </div>
 
           </div>

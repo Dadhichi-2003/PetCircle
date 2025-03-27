@@ -85,7 +85,9 @@ const CreatePost = ({open,setOpen}) => {
             setOpen(false); // ✅ Modal close kar do
 
             getPetPost();
-            
+
+            const updatedPost = [res.data.posts,...posts]
+            dispatch(setPosts(updatedPost))
             toast.success("post added");
             console.log("ho gya")
          

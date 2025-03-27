@@ -12,7 +12,7 @@ const PetModel = require("../models/PetModel");
 
 
 const storage = multer.diskStorage({
-  destination: "./uploads", // Optional if using Cloudinary
+  // destination: "./uploads", // Optional if using Cloudinary
   filename: function (req, file, cb) {
     cb(null, file.originalname);
   },

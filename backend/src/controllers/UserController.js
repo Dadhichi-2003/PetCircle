@@ -26,47 +26,101 @@ const upload = multer({
   //file filter:pmg/jpg tec
 }).single("profilePic");
 
-const upadateProfilePic = async(req,res)=>{
+const upadateProfileOfOwner = async (req, res) => {
   upload(req, res, async (err) => {
-        if (err) {
-          return res.status(500).json({ message: "File upload failed", error: err.message });
-        }
-    
-        try {
-          // Upload file to Cloudinary 
-          let profilePic= "";
-          if (req.file) {
-            const cloudinaryResponse = await cloudinaryUtil.uploadFileToCloudinary(req.file);
-            profilePic = cloudinaryResponse.secure_url;
-          }
-          const userId = req.params.id
-          const profile= await UserModel.findById(userId);
-                  if (!profile) {
-                    return res.status(404).json({ message: "Profile not found" });
-                  }
+    if (err) {
+      return res.status(500).json({ message: "File upload failed", error: err.message });
+    }
 
-          if(profile){
-            profile.profilePic = profilePic
-          }
-          
-          profile.save()
-            
-          return res.status(200).json({
-            message:"profile Pic updated succesfully",
-            profilePic
-          })
-        }catch(err){
+    try {
+      // ✅ Check existing profile before modifying
+      const userId = req.params.id;
+      const profile = await UserModel.findById(userId).populate("pets");
 
-          res.status(500).json({
-            message:"profile pic not updated",
-            error:err.message
-          })
-        }
+      if (!profile) {
+        return res.status(404).json({ message: "Profile not found" });
+      }
+
+      let profilePic = profile.profilePic; // ✅ Default to existing image
+
+      if (req.file) {
+        const cloudinaryResponse = await cloudinaryUtil.uploadFileToCloudinary(req.file);
+        profilePic = cloudinaryResponse.secure_url;
+      }
+
+      const { username, bio, location, expertise, experience, services, contact } = req.body;
+
+      if (req.file) {
+        profile.profilePic = profilePic;
+      }
+
+      if (username) profile.username = username;
+      if (location) profile.location = location;
+      if (bio) profile.bio = bio;
+      if (expertise) profile.expertise = expertise;
+      if (experience) profile.experience = experience;
+      if (services) profile.services = services;
+      if (contact) profile.contact = contact;
+
+      await profile.save();
+
+      return res.status(200).json({
+        message: "Profile updated successfully",
+        profile,
+      });
+    } catch (err) {
+      res.status(500).json({
+        message: "Profile not updated",
+        error: err.message,
+      });
+    }
+  });
+};
+
+
+// const editOwnerProfile = async(req,res)=>{
+
+//   upload(req, res, async (err) => {
+//     if (err) {
+//       return res.status(500).json({ message: "File upload failed", error: err.message });
+//     }
+
+//     try {
+//       // Upload file to Cloudinary 
+//       let profilePic= "";
+//       if (req.file) {
+//         const cloudinaryResponse = await cloudinaryUtil.uploadFileToCloudinary(req.file);
+//         profilePic = cloudinaryResponse.secure_url;
+//       }
+//       const userId = req.params.id
+//       const profile= await UserModel.findById(userId);
+//               if (!profile) {
+//                 return res.status(404).json({ message: "Profile not found" });
+//               }
+
+//       if(profile){
+//         profile.profilePic = profilePic
+//       }
+      
+//       profile.save()
+        
+//       return res.status(200).json({
+//         message:"profile Pic updated succesfully",
+//         profilePic
+//       })
+//     }catch(err){
+
+//       res.status(500).json({
+//         message:"profile pic not updated",
+//         error:err.message
+//       })
+//     }
 
 
 
-})
-}
+// }
+
+// )}
 
 
 const signUpUser = async (req, res) => {
@@ -299,6 +353,9 @@ const resetpassword = async (req, res) => {
 };
 
 
+
+
+
 // const addProfileWithFile = async (req, res) => {
 //     upload(req, res, async (err) => {
 //       if (err) {
@@ -333,7 +390,7 @@ module.exports = {
   logout,
   getSuggestedUsers,
   followOrUnfollow,
-  upadateProfilePic,
+  upadateProfileOfOwner,
   forgotPassword,
   resetpassword
   // addProfileWithFile,

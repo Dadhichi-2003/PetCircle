@@ -5,6 +5,7 @@ const postSlice = createSlice({
     initialState:{
         posts:[],
         selectedPost:null,
+        petPost:[]
         
     },
     reducers:{
@@ -15,8 +16,10 @@ const postSlice = createSlice({
         setSelectedPost:(state,action) => {
             state.selectedPost = action.payload;
         },
-        
+        setpetPost:(state,action) => {
+            state.petPost = action.payload;
+        },
     }
 });
-export const {setPosts, setSelectedPost} = postSlice.actions;
+export const {setPosts, setSelectedPost,setpetPost} = postSlice.actions;
 export default postSlice.reducer;

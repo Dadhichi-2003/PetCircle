@@ -5,7 +5,7 @@ const userModel = require("../models/UserModel")
 
 
 const storage = multer.diskStorage({
-    destination: "./uploads", // Optional if using Cloudinary
+    // destination: "./uploads", // Optional if using Cloudinary
     filename: function (req, file, cb) {
       cb(null, file.originalname);
     },
@@ -82,63 +82,52 @@ const addPetProfile = async (req, res) => {
     }
   }
 
-  const editProfile = async (req, res) => {
+  const editPetProfile = async (req, res) => {
     upload(req, res, async (err) => {
       if (err) {
         return res.status(500).json({ message: "File upload failed", error: err.message });
       }
   
       try {
-        const { petId, petname, species, breed, age, gender, medicalHistory, userId, username, bio, location } = req.body;
-  
-        // Check if Pet exists
+        const petId = req.params.id;
         const pet = await petModel.findById(petId);
+  
         if (!pet) {
           return res.status(404).json({ message: "Pet not found" });
         }
   
-        // Check if User exists
-        const user = await userModel.findById(userId);
-        if (!user) {
-          return res.status(404).json({ message: "User not found" });
+        let profilePic = pet.profilePic; // ✅ पहले से मौजूद इमेज डिफ़ॉल्ट रखी
+  
+        if (req.file) {
+          const cloudinaryResponse = await cloudinaryUtil.uploadFileToCloudinary(req.file);
+          profilePic = cloudinaryResponse.secure_url;
         }
   
-        // Update pet details if provided
+        const { petname, species, breed, age, medicalHistory } = req.body;
+  
+        // ✅ अब इमेज तभी अपडेट होगी जब नई इमेज दी जाएगी
+        if (req.file) {
+          pet.profilePic = profilePic;
+        }
+  
         if (petname) pet.petname = petname;
         if (species) pet.species = species;
         if (breed) pet.breed = breed;
         if (age) pet.age = age;
-        if (gender) pet.gender = gender;
         if (medicalHistory) pet.medicalHistory = medicalHistory;
   
-        // Update user details if provided
-        if (username) user.username = username;
-        if (bio) user.bio = bio;
-        if (location) user.location = location;
-  
-
-        //
-        // Handle profile picture update (if provided)
-        if (req.file) {
-          const cloudinaryResponse = await cloudinaryUtil.uploadFileToCloudinary(req.file);
-          pet.profilePic = cloudinaryResponse.secure_url;
-        }
-  
-        // Save changes
         await pet.save();
-        await user.save();
   
         res.status(200).json({
-          message: "Profile updated successfully",
+          message: "Pet profile updated successfully",
           pet,
-          user
         });
-  
       } catch (error) {
         res.status(500).json({ message: "Error updating profile", error: error.message });
       }
     });
   };
+  
 
   const deletePetProfile = async (req, res) => {
     try {
@@ -206,7 +195,7 @@ const addPetProfile = async (req, res) => {
 
 module.exports={
     addPetProfile,
-    editProfile,
+    editPetProfile,
     getAllpets,
     deletePetProfile,
     getPetProfileById

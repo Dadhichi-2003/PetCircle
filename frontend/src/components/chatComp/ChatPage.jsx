@@ -14,7 +14,7 @@ const ChatPage = () => {
   const {onlineUsers,messages }= useSelector(store=>store.chat)
   const dispatch = useDispatch()
   const [textMessage ,setTextMessage] = useState("");
-
+  
   const sendMessageHandler = async(receiverId) =>{
     try{
       const res = await axios.post(`messages/message/${receiverId}`,{textMessage},{ withCredentials: true,headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }});

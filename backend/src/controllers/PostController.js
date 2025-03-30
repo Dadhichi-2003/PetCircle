@@ -7,6 +7,7 @@ const multer = require("multer");
 const cloudinaryUtil = require("../utils/CloudinaryUtil");
 const PostModel = require("../models/PostModel");
 const PetModel = require("../models/PetModel");
+const { io, getReceiverSocketId } = require("../socket/socket");
 
 
 
@@ -133,7 +134,8 @@ const likePost = async (req, res) => {
      // implement socket io for real time notification
      const user = await userModel.findById(likeKrneWalaUserKiId).select('username profilePic');
          
-     const postOwnerId = post.pet?.owner.toString();
+     const postOwnerId = post?.pet?.owner.toString();
+     console.log(postOwnerId)
      if(postOwnerId !== likeKrneWalaUserKiId){
          // emit a notification event
          const notification = {

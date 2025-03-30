@@ -1,54 +1,57 @@
 const Message = require ("../models/MessageModel")
 const Conversation = require ("../models/CoversationModel");
-const { getReceiverSocketId } = require("../socket/socket");
+const { getReceiverSocketId, io } = require("../socket/socket");
 
 
-const sendMessage = async (req,res) => {
+const sendMessage = async (req, res) => {
     try {
         const senderId = req.id;
         const receiverId = req.params.id;
-        const {textMessage:message} = req.body;
-      
+        const { textMessage: message } = req.body;
+
         let conversation = await Conversation.findOne({
-            participants:{$all:[senderId, receiverId]}
+            participants: { $all: [senderId, receiverId] }
         });
-        // establish the conversation if not started yet.
-        if(!conversation){
+
+        // Establish the conversation if not started yet.
+        if (!conversation) {
             conversation = await Conversation.create({
-                participants:[senderId, receiverId]
-            })
-        };
+                participants: [senderId, receiverId]
+            });
+        }
+
         const newMessage = await Message.create({
             senderId,
             receiverId,
-            message 
+            message
         });
 
-       
-        if(newMessage) conversation.messages.push(newMessage._id);
+        // Add message to conversation
+        conversation.messages.push(newMessage._id);
+        await conversation.save();
 
-        await Promise.all([conversation.save(),newMessage.save()])
-
-        res.status(200).json({
-            message:"message sent succesfully",
-            newMessage
-        })
-
-        // implement socket io for real time data transfer
-
+        // Emit socket event before sending response
         const receiverSocketId = getReceiverSocketId(receiverId);
         if(receiverSocketId){
-            io.to(receiverSocketId).emit('newMessage',newMessage);
+            io.to(receiverSocketId).emit('newMessage', newMessage);
         }
 
-      
+        // Now send the response
+        res.status(200).json({
+            message: "Message sent successfully",
+            newMessage
+        });
+
     } catch (error) {
-        res.status(500).json({
-            message:"not happeninig",
-            error:error.message
-        })
+        if (!res.headersSent) {  // Prevent multiple responses
+            res.status(500).json({
+                message: "Error sending message",
+                error: error.message
+            });
+        }
     }
-}
+};
+
 
 
 const getMessage = async (req,res) => {

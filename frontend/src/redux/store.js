@@ -3,6 +3,7 @@ import authSlice from "./user/authSlice"
 import postSlice from "../redux/post/postSlice"
 import socketSlice from './socket/socketSlice'
 import chatSlice from './chat/chatSlice'
+import rtnSlice from './chat/rtnSlice'
 
 import {
     persistReducer,
@@ -22,7 +23,8 @@ import {
     auth:authSlice,
     post:postSlice,
     socketio:socketSlice,
-    chat :chatSlice
+    chat :chatSlice,
+    realTimeNotification:rtnSlice
   })
 
   const persistConfig = {

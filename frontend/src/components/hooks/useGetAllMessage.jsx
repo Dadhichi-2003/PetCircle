@@ -4,6 +4,7 @@ import { setMessages } from "@/redux/chat/chatSlice";
 import axios from "axios";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { data } from "react-router-dom";
 
 const useGetAllMessage = () => {
     const dispatch = useDispatch();
@@ -13,6 +14,7 @@ const useGetAllMessage = () => {
             try {
                 const res = await axios.get(`/messages/message/${selectedUser?._id}`, { withCredentials: true });
                 if (res.data) {  
+                    console.log(res.data.newMessage)
                     dispatch(setMessages(res.data.messages));
                 }
             } catch (error) {

@@ -6,13 +6,18 @@ import axios from "axios"
 import { useDispatch, useSelector } from "react-redux";
 import { setAuthUser, setPetData } from "@/redux/user/authSlice";
 import { setPosts, setSelectedPost } from "@/redux/post/postSlice";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { Button } from "../ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
+  const { likeNotification } = useSelector(store => store.realTimeNotification);
+  console.log(likeNotification)
   const navigate = useNavigate();
-  const {user} = useSelector(store=>store.auth)
+  const { user } = useSelector(store => store.auth)
 
   const handleLogout = async () => {
     try {
@@ -45,10 +50,10 @@ const Sidebar = () => {
     { name: "Feed", icon: <FiHome />, path: "feeds" },
     { name: "Profile", icon: <FiUser />, path: `profile/${user._id}` },
     { name: "Messages", icon: <FiMessageSquare />, path: "messages" },
-    { name: "Notifications", icon: <FiBell />, path: "profile" },
+    { name: "Notifications", icon: <FiBell />, path: "feeds" },
     { name: "Community", icon: <FiUsers />, path: "community" },
     { name: "Adoption", icon: <FiHeart />, path: "profile" },
-    { name: "Logout", icon: <FiLogOut />, path: "/logout" , action: handleLogout },
+    { name: "Logout", icon: <FiLogOut />, path: "/logout", action: handleLogout },
   ];
 
   return (
@@ -60,9 +65,8 @@ const Sidebar = () => {
 
       {/* Sidebar */}
       <div
-        className={`fixed inset-y-0 left-0 w-64 bg-[#0D1B2A] text-[#E0E1DD] transform ${
-          isOpen ? "translate-x-0" : "-translate-x-full"
-        } md:translate-x-0 transition-transform duration-300 ease-in-out shadow-lg h-screen`}
+        className={`fixed inset-y-0 left-0 w-64 bg-[#0D1B2A] text-[#E0E1DD] transform ${isOpen ? "translate-x-0" : "-translate-x-full"
+          } md:translate-x-0 transition-transform duration-300 ease-in-out shadow-lg h-screen`}
       >
         {/* Logo Section */}
         <div className="flex justify-start items-center p-5 mt-3 border-b border-[#1B263B]">
@@ -72,26 +76,74 @@ const Sidebar = () => {
 
         {/* Menu Items */}
         <nav className="mt-4">
-      {menuItems.map((item, index) =>
-        item.action ? ( // ✅ Check if action exists (Logout button)
-          <button
-            key={index}
-            onClick={item.action}
-            className="flex w-full items-center gap-3 px-13 py-3 text-lg hover:bg-[#1B263B] transition rounded-md"
-          >
-            {item.icon} {item.name}
-          </button>
-        ) : (
-          <Link
-            key={index}
-            to={item.path}
-            className="flex items-center gap-3 px-13 py-3 text-lg hover:bg-[#1B263B] transition rounded-md"
-          >
-            {item.icon} {item.name}
-          </Link>
-        )
-      )}
-    </nav>
+          {menuItems.map((item, index) =>
+            item.action ? ( // ✅ Check if action exists (Logout button)
+              <button
+                key={index}
+                onClick={item.action}
+                className="relative flex w-full items-center gap-3 px-13 py-3 text-lg hover:bg-[#1B263B] transition rounded-md"
+              >
+                {item.icon} {item.name}
+              </button>
+            ) : (
+
+              <>
+                {item.name === "Notifications" ? (<div className="relative">
+                  <Link
+                    to={item.path}
+                    className="flex items-center gap-3 px-13 py-3 text-lg hover:bg-[#1B263B] transition rounded-md"
+                  >
+                    {item.icon} {item.name}
+                  </Link>
+
+                  {likeNotification.length > 0 && (
+                    <Popover>
+                      <PopoverTrigger asChild>
+                      <div className="relative flex items-center gap-3 px-13 py-3 text-lg hover:bg-[#1B263B] transition rounded-md cursor-pointer">
+                  {item.icon}
+                  
+                  {/* Notification Count Badge Near Bell Icon */}
+                  {likeNotification.length > 0 && (
+                    <span className="absolute left-50 flex items-center justify-center h-5 w-5 rounded-full bg-red-600 text-white text-xs font-bold">
+                      {likeNotification.length}
+                    </span>
+                  )}
+
+                  {item.name}
+                </div>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-56">
+                        <div>
+                          {likeNotification.length === 0 ? (
+                            <p>No new notifications</p>
+                          ) : (
+                            likeNotification.map((notification) => (
+                              <div key={notification.userId} className="flex items-center  gap-2 my-2">
+                                <Avatar>
+                                  <AvatarImage src={notification.userDetails?.profilePic} />
+                                  <AvatarFallback>CN</AvatarFallback>
+                                </Avatar>
+                                <p className="text-sm">
+                                  <span className=" font-bold">{notification.userDetails?.username}</span> liked your post
+                                </p>
+                              </div>
+                            ))
+                          )}
+                        </div>
+                      </PopoverContent>
+                    </Popover>
+                  )}
+                </div>) : (<Link
+                  key={index}
+                  to={item.path}
+                  className="flex items-center gap-3 px-13 py-3 text-lg hover:bg-[#1B263B] transition rounded-md"
+                >
+                  {item.icon} {item.name}
+                </Link>)}
+              </>
+            )
+          )}
+        </nav>
       </div>
 
       {/* Mobile Menu Button */}

@@ -82,8 +82,8 @@ const CreatePost = ({open,setOpen}) => {
             dispatch(setPosts([res.data.posts, ...posts])); // ✅ Redux update // [1] -> [1,2] -> total element = 2
             setCaption(""); // ✅ Caption clear kar do
             setImagePreview(""); // ✅ Image preview clear karo
-            setOpen(false); // ✅ Modal close kar do
-
+            
+            setOpen(false)
             getPetPost();
 
             const updatedPost = [res.data.posts,...posts]
@@ -101,7 +101,7 @@ const CreatePost = ({open,setOpen}) => {
       }
     
   return (
-  <>  <div open={setOpen()}>
+  <>  <div>
         <DialogHeader className='text-center font-semibold mb-2'>Create New Post</DialogHeader>
         <div className='flex my-3 gap-3 items-center'>
           <Avatar>

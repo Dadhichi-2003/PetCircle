@@ -5,12 +5,15 @@ import store from '@/redux/store'
 import { MoreHorizontal } from 'lucide-react'
 
 import React, { useState } from 'react'
+import { FaHeart } from 'react-icons/fa6'
 import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 
 
 
-const ProfileDialog = ({ open, setOpen }) => {
+const ProfileDialog = ({ post ,img}) => {
+    console.log(post)
+    const {setPost} = useSelector(store =>store.post)
   const [text, setText] = useState("");
   const {pet} = useSelector(store=>store.auth)
      const changeEventHandler = (e) => {
@@ -25,12 +28,12 @@ const ProfileDialog = ({ open, setOpen }) => {
          alert(text);    
      }
      return (
-         <Dialog open={open}>
-             <DialogContent onInteractOutside={() => setOpen(false)} className="w-max-5xl h-fit p-0 flex flex-col">
+        //  <Dialog open={open}>
+        //      <DialogContent onInteractOutside={() => setOpen(false)} className="w-max-5xl h-fit p-0 flex flex-col">
                  <div className='flex flex-1'>
                      <div className='w-1/2'>
                          <img
-                             src='https://images.pexels.com/photos/28898122/pexels-photo-28898122/free-photo-of-detailed-half-moon-against-black-night-sky.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load'
+                             src={img}
                              alt="post_img"
                              className='w-full h-full object-cover rounded-l-lg'
                          />
@@ -45,7 +48,7 @@ const ProfileDialog = ({ open, setOpen }) => {
                                      </Avatar>
                                  </Link>
                                  <div>
-                                     <Link className='font-semibold text-xs'>{pet?.petname}</Link>
+                                     <Link className='font-semibold text-xs'>{post?.pet?.petname}</Link>
                                      {/* <span className='text-gray-600 text-sm'>Bio here...</span> */}
                                  </div>
                              </div>
@@ -73,24 +76,28 @@ const ProfileDialog = ({ open, setOpen }) => {
                                      </Avatar>
                                  </Link>
                                  <div>
-                                     <Link className='font-semibold text-xs'>{pet?.petname}</Link>
-                                     <span className='text-gray-600 text-sm'>Bio here...</span>
+                                     <Link className='font-semibold text-xs mr-2'>{pet?.petname}</Link>
+                                     <span className='text-gray-600 text-sm'>{post?.caption}</span>
                                  </div>
                              </div>
                              </div>
                         </div>
+                       
                          <div className='p-4'>
                              <div className='flex items-center gap-2'>
                                  <input type="text" value={text} onChange={changeEventHandler} placeholder='Add a comment...' className='w-full outline-none border text-sm border-gray-300 p-2 rounded' />
  
-                                 
+                                
                                  <Button disabled={!text.trim()} onClick={sendMessageHandler} className="hover:bg-primary hover:text-light" variant="outline" >Send</Button>
                              </div>
                          </div>
+                         <div className='flex items-center gap-2  pl-4  ' >
+                            <FaHeart className='text-red-600'/>  <p >{post?.likes.length} likes</p>
+                        </div>
                      </div>
                  </div>
-             </DialogContent>
-         </Dialog>
+        //      </DialogContent>
+        //  </Dialog>
      )
 }
 

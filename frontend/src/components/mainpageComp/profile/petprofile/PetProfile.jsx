@@ -4,7 +4,7 @@ import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
 import { MoreHorizontal } from "lucide-react"
 import React, { useEffect, useState } from 'react'
 import ProfileDialog from "./ProfileDialog"
-import { useParams } from "react-router-dom"
+import {  useNavigate, useParams } from "react-router-dom"
 import axios from "axios"
 import { useDispatch, useSelector } from "react-redux"
 import { setPetData } from "@/redux/user/authSlice"
@@ -19,7 +19,13 @@ const PetProfile = () => {
   const id = useParams().id
   const { pet } = useSelector((store) => store.auth);
   const { petPost } = useSelector(store => store.post);
-  const [count,setCount] = useState(0)
+  const [count, setCount] = useState(0);
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    profileDetails()
+    getPetPost()
+  }, [])
 
   function ProfileDetail({ label, value }) {
     return (
@@ -55,20 +61,29 @@ const PetProfile = () => {
     }
   }
 
-  useEffect(() => {
-    profileDetails()
-    getPetPost()
-  }, [open])
 
-  function PostImage({ src, alt }) {
+
+  function PostImage({ src, alt ,post,img}) {
     return (
-      <div className="aspect-square overflow-hidden rounded-lg">
-        <img
-          src={src || "/placeholder.svg"}
-          alt={alt}
-          className="w-full h-full object-cover transition-all duration-300 hover:scale-105 hover:shadow-lg cursor-pointer"
-        />
-      </div>
+      <>
+        <Dialog>
+          <DialogTrigger>
+            <div className="aspect-square overflow-hidden rounded-sm">
+              <img
+
+                src={src || "/placeholder.svg"}
+                alt={alt}
+                className="w-full h-full object-cover transition-all duration-300 hover:scale-105 hover:shadow-lg cursor-pointer"
+              />
+            </div>
+          </DialogTrigger>
+          <DialogContent>
+              <ProfileDialog post={post} img={img} />
+          </DialogContent>
+        </Dialog>
+
+
+      </>
     )
   }
   return (
@@ -80,7 +95,7 @@ const PetProfile = () => {
             <CardContent >
               <div className="flex justify-between p-5 bg-gray-100 dark:bg-slate-800">
 
-
+               
                 <div className="flex flex-col items-center md:gap-20 md:flex-row ">
                   <Avatar className=" w-60 h-60 rounded-lg  border-white shadow-lg">
                     <AvatarImage
@@ -89,7 +104,7 @@ const PetProfile = () => {
                     />
                     <AvatarFallback className="text-4xl">PP</AvatarFallback>
                   </Avatar>
-                  {/* <ProfileDialog open={open} setOpen={setOpen} /> */}
+                  
 
                   <div className="flex flex-col text-center gap-3  md:text-left">
                     <h1 className="text-4xl font-bold my-3">{pet?.petname}</h1>
@@ -105,32 +120,39 @@ const PetProfile = () => {
                 </div>
                 <Dialog>
                   <DialogTrigger asChild>
-                    <MoreHorizontal className="cursor-pointer text-gray-600 hover:text-red-500 transition-colors" />
+                    <MoreHorizontal onClick={() => { setOpen(true) }} className="cursor-pointer text-gray-600 hover:text-red-500 transition-colors" />
                   </DialogTrigger>
-                  <DialogContent className="flex flex-col items-center text-sm text-center ">
+
+                  {open && <DialogContent className="flex flex-col items-center text-sm text-center ">
 
                     <Dialog>
                       <DialogTrigger asChild>
-                        <button className="text-gray-900 text-lg  hover:cursor-pointer w-80 hover:border-b-2 border-gray-500">
+                        <button onClick={() => { setOpen(true) }} className="text-gray-900 text-lg  hover:cursor-pointer w-80 hover:border-b-2 border-gray-500">
                           Edit Profile
                         </button>
                       </DialogTrigger>
-                      <DialogContent  className="flex flex-col items-center text-sm text-center w-fit">
-                        <EditPetProfile />
-                      </DialogContent>
+                      {open && <DialogContent className="flex flex-col items-center text-sm text-center w-fit">
+                        <EditPetProfile open={open} setOpen={setOpen} />
+                      </DialogContent>}
+
                     </Dialog>
 
                     <Dialog >
                       <DialogTrigger asChild>
                         <button onClick={() => setOpen(true)} className="text-gray-900 text-lg  hover:cursor-pointer w-80 hover:border-b-2 border-gray-500"> Add Post  </button>
                       </DialogTrigger>
-                      <DialogContent >
-                        <CreatePost open={open} setOpen={setOpen} />
-                      </DialogContent>
+
+                      {open &&
+
+                        <DialogContent >
+                          <CreatePost open={open} setOpen={setOpen} />
+                        </DialogContent>}
+
 
                     </Dialog>
 
-                  </DialogContent>
+                  </DialogContent>}
+
                 </Dialog>
 
               </div>
@@ -138,12 +160,12 @@ const PetProfile = () => {
           </Card>
           <div className="mb-8">
             <h2 className="text-3xl font-bold mb-6">Posts</h2>
-            <div className="grid grid-cols-2 gap-1 md:grid-cols-3 md:gap-4">
+            <div className=" relative grid grid-cols-2 gap-1 md:grid-cols-3 md:gap-4">
               {
                 petPost?.map(post => {
-                  if (pet._id === post?.pet._id) {
+                  if (pet?._id === post?.pet._id) {
                     return post?.media?.map((img) => {
-                      return <PostImage src={img} alt="post" />
+                      return <PostImage src={img} alt="post" post={post} img={img} />
                     })
                   }
                 })
@@ -152,6 +174,7 @@ const PetProfile = () => {
             </div>
           </div>
         </div>
+
       </div>
 
     </>

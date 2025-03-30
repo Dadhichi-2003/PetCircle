@@ -128,8 +128,24 @@ const likePost = async (req, res) => {
       postId,
       { $addToSet: { likes: likeKrneWalaUserKiId } }, // Add user ID to likes array
       { new: true } // Returns the updated document
-    );
+    ).populate('pet','owner');
 
+     // implement socket io for real time notification
+     const user = await userModel.findById(likeKrneWalaUserKiId).select('username profilePic');
+         
+     const postOwnerId = post.pet?.owner.toString();
+     if(postOwnerId !== likeKrneWalaUserKiId){
+         // emit a notification event
+         const notification = {
+             type:'like',
+             userId:likeKrneWalaUserKiId,
+             userDetails:user,
+             postId,
+             message:'Your post was liked'
+         }
+         const postOwnerSocketId = getReceiverSocketId(postOwnerId);
+         io.to(postOwnerSocketId).emit('notification', notification);
+     }
     
     return res.status(200).json({ message: "Post liked", success: true ,post});
   } catch (error) {
@@ -141,7 +157,7 @@ const dislikePost = async (req, res) => {
   try {
     const UserId = req.id; //jo person dislike krne vala he uski id ayegi
     const postId = req.params.id;
-    const post = await Post.findById(postId);
+    const post = await Post.findById(postId).populate('pet','owner');
     if (!post)
       return res
         .status(404)
@@ -149,6 +165,24 @@ const dislikePost = async (req, res) => {
 
     await post.updateOne({ $pull: { likes: UserId } });
     await post.save();
+
+     // implement socket io for real time notification
+     const user = await userModel.findById(UserId).select('username profilePic');
+         
+     const postOwnerId = post.pet?.owner.toString();
+     if(postOwnerId !== UserId){
+         // emit a notification event
+         const notification = {
+             type:'dislike',
+             userId:UserId,
+             userDetails:user,
+             postId,
+             message:'Your post was liked'
+         }
+         const postOwnerSocketId = getReceiverSocketId(postOwnerId);
+         io.to(postOwnerSocketId).emit('notification', notification);
+     }
+    
 
     return res.status(200).json({ message: "Post disliked", success: true });
   } catch (error) {

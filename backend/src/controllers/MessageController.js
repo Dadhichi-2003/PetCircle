@@ -1,5 +1,6 @@
 const Message = require ("../models/MessageModel")
 const Conversation = require ("../models/CoversationModel");
+const { getReceiverSocketId } = require("../socket/socket");
 
 
 const sendMessage = async (req,res) => {
@@ -34,6 +35,12 @@ const sendMessage = async (req,res) => {
         })
 
         // implement socket io for real time data transfer
+
+        const receiverSocketId = getReceiverSocketId(receiverId);
+        if(receiverSocketId){
+            io.to(receiverSocketId).emit('newMessage',newMessage);
+        }
+
       
     } catch (error) {
         res.status(500).json({

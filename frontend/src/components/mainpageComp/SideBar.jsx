@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { FiMenu, FiHome, FiUser, FiMessageSquare, FiBell, FiUsers, FiHeart, FiLogOut } from "react-icons/fi";
 import logo from "../../assets/logo1.png"
 import axios from "axios"
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setAuthUser, setPetData } from "@/redux/user/authSlice";
 import { setPosts, setSelectedPost } from "@/redux/post/postSlice";
 
@@ -12,6 +12,7 @@ const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const dispatch = useDispatch()
   const navigate = useNavigate();
+  const {user} = useSelector(store=>store.auth)
 
   const handleLogout = async () => {
     try {
@@ -42,7 +43,7 @@ const Sidebar = () => {
 
   const menuItems = [
     { name: "Feed", icon: <FiHome />, path: "feeds" },
-    { name: "Profile", icon: <FiUser />, path: "profile" },
+    { name: "Profile", icon: <FiUser />, path: `profile/${user._id}` },
     { name: "Messages", icon: <FiMessageSquare />, path: "messages" },
     { name: "Notifications", icon: <FiBell />, path: "profile" },
     { name: "Community", icon: <FiUsers />, path: "community" },

@@ -12,7 +12,7 @@ import { useForm } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'sonner'
 
-const EditPetProfile = () => {
+const EditPetProfile = ({open,setOpen}) => {
     const [loading,setLoading]=useState(false);
     const imageRef = useRef();
 
@@ -59,6 +59,7 @@ const EditPetProfile = () => {
              // Append file only if it exists
         if (profilePic && typeof profilePic !== "string") {
             formData.append("profilePic", profilePic);
+            
         }
         else {
             
@@ -70,7 +71,7 @@ const EditPetProfile = () => {
         if(res.data){
             toast.success("Pet Profile Updated!!!")
             console.log(res.data.pet)
-            
+            setOpen(false)
         }
 
         }catch(err){

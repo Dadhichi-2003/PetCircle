@@ -23,9 +23,11 @@ const Post = ({ post }) => {
     const { user } = useSelector(store => store.auth)
     const { pet } = useSelector(store => store.auth);
     const { posts } = useSelector(store => store.post);
-  
-    const [liked, setLiked] = useState(posts?.likes?.includes(user._id) || false)
-    const [postLike, setPostLike] = useState(post?.likes?.length)
+
+    console.log(post)
+
+    const [liked, setLiked] = useState(post?.likes?.includes(user._id) || false)
+    const [postLike, setPostLike] = useState(post?.likes?.length || 0);
     const [comment, setComment] = useState(post?.comments)
   
     const dispatch = useDispatch();
@@ -60,7 +62,8 @@ const Post = ({ post }) => {
 
     const likeOrDislikeHandler = async () => {
         try {
-
+            
+    console.log(liked)
             const action = liked ? "dislike" : "like";
 
             const res = await axios.get(`/posts/petpost/${post?._id}/${action}`, { withCredentials: true });

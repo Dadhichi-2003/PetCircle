@@ -5,11 +5,13 @@ import { useDispatch } from 'react-redux'
 import { setPosts } from '@/redux/post/postSlice'
 import RightSidebar from '../suggestedComp/RightSidebar'
 import useGetSuggestedUsers from '@/components/hooks/useGetSuggestedUsers'
+import useGetPetPost from '@/components/hooks/useGetPetPost'
 
 const Feed = () => {
 
   useGetAllPost();
   useGetSuggestedUsers();
+  useGetPetPost()
   // const dispatch = useDispatch()
 
   // const posts = useGetAllPost();

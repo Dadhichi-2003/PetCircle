@@ -1,10 +1,11 @@
 
+import useGetPetPost from '@/components/hooks/useGetPetPost'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogHeader } from '@/components/ui/dialog'
 import { Textarea } from '@/components/ui/textarea'
 import { readFileAsDataURL } from '@/lib/utils'
-import { setPosts } from '@/redux/post/postSlice'
+import { setpetPost, setPosts } from '@/redux/post/postSlice'
 import { setPetData } from '@/redux/user/authSlice'
 import axios from 'axios'
 import { Loader2 } from 'lucide-react'
@@ -14,24 +15,27 @@ import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'sonner'
 
 const CreatePost = ({open,setOpen}) => {
-
+   
     const imageRef = useRef();
     const [file, setFile] = useState("");
     const [caption, setCaption] = useState("");
     const [imagePreview, setImagePreview] = useState("");
     const [loading, setLoading] = useState(false);
-
+ 
    
-    const {posts} = useSelector(store=>store.post);
+    const {posts,petPost} = useSelector(store=>store.post);
     const dispatch = useDispatch();
-   
+    
     const { pet } = useSelector((store) => store.auth);
+ 
 
-    useEffect(() => {
-      if (posts) {
-          
-      }
-  }, [posts]);
+  
+  //   useEffect(() => {
+  //       useGetPetPost();
+  // }, [open]);
+
+
+ 
 
     const fileChangeHandler = async (e) => {
         const file = e.target.files?.[0];
@@ -42,23 +46,24 @@ const CreatePost = ({open,setOpen}) => {
         }
       }
 
-      const getPetPost =  async()=>{
-        try{
+      // const getPetPost =  async()=>{
+      //   try{
     
-          const res = await axios.get(`/posts/petpost/${pet?._id}`,{withCredentials:true});
+      //     const res = await axios.get(`/posts/petpost/${pet?._id}`,{withCredentials:true});
           
-          if(res.data){
-            const postss = res.data.posts //api ka post aa rha he
-            dispatch(setPosts(res.data.posts));
+      //     if(res.data){
+      //       const postss = res.data.posts //api ka post aa rha he
+      //       dispatch(setPosts(res.data.posts));
             
           
-          }
+      //     }
     
-        }catch(err){  
-          console.log(err)
-        }
-      }
-    
+      //   }catch(err){  
+      //     console.log(err)
+      //   }
+      // }
+
+
 
     const createPostHandler = async (e) => {
 
@@ -76,19 +81,25 @@ const CreatePost = ({open,setOpen}) => {
             },
             withCredentials: true
           });
-       
+          console.log(res.data)
           if (res.data) {
-
-            dispatch(setPosts([res.data.posts, ...posts])); // ✅ Redux update // [1] -> [1,2] -> total element = 2
-            setCaption(""); // ✅ Caption clear kar do
-            setImagePreview(""); // ✅ Image preview clear karo
             
-            setOpen(false)
-            getPetPost();
+            dispatch(setPosts([res.data.posts, ...posts])); // ✅ Redux update // [1] -> [1,2] -> total element = 2
+            
+            dispatch(setpetPost([res.data.posts, ...petPost]));
 
+            console.log(res.data.data)
+           
+          
+            setCaption("");
+            setImagePreview(""); 
+          
+            setOpen(false)
+           
             const updatedPost = [res.data.posts,...posts]
             dispatch(setPosts(updatedPost))
             toast.success("post added");
+            // useGetPetPost();
             console.log("ho gya")
          
           }
@@ -99,6 +110,8 @@ const CreatePost = ({open,setOpen}) => {
           setLoading(false);
         }
       }
+
+
     
   return (
   <>  <div>

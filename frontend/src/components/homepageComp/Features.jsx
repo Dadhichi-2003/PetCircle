@@ -17,7 +17,7 @@ const Features = () => {
   return (
     <>
       {/* Why Join Section */}
-      <section className="px-6 py-10 font-roboto">
+      <section className="--background px-6 py-10 font-roboto">
         <h2 className="text-center text-3xl font-bold mb-8">Why Join PetCircle?</h2>
         <div className="grid  sm:grid-cols-1 md:grid-cols-3 gap-6">
           {/* Feature Cards */}

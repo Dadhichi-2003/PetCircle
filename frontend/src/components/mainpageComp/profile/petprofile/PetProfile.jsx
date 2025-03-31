@@ -11,21 +11,25 @@ import { setPetData } from "@/redux/user/authSlice"
 import CreatePost from "./CreatePost"
 import { setpetPost } from "@/redux/post/postSlice"
 import EditPetProfile from "./EditPetProfile"
+import useGetPetPost from "@/components/hooks/useGetPetPost"
 
 const PetProfile = () => {
-
+  useGetPetPost();
+  
   const [open, setOpen] = useState(false)
   const dispatch = useDispatch()
   const id = useParams().id
   const { pet } = useSelector((store) => store.auth);
   const { petPost } = useSelector(store => store.post);
+  console.log(petPost);
+  
   const [count, setCount] = useState(0);
   const navigate = useNavigate()
 
   useEffect(() => {
     profileDetails()
-    getPetPost()
-  }, [])
+    // getPetPost()
+  }, [petPost])
 
   function ProfileDetail({ label, value }) {
     return (
@@ -47,19 +51,19 @@ const PetProfile = () => {
     }
   }
 
-
-  const getPetPost = async () => {
-    try {
-      const res = await axios.get(`/posts/petpost/${pet?._id}`, { withCredentials: true });
-      if (res.data) {
-        dispatch(setpetPost(res.data.posts))
-        console.log(res.data.posts)
-      }
-    }
-    catch (err) {
-      console.log(err)
-    }
-  }
+ 
+  // const getPetPost = async () => {
+  //   try {
+  //     const res = await axios.get(`/posts/petpost/${pet?._id}`, { withCredentials: true });
+  //     if (res.data) {
+  //       dispatch(setpetPost(res.data.posts))
+  //       console.log(res.data.posts)
+  //     }
+  //   }
+  //   catch (err) {
+  //     console.log(err)
+  //   }
+  // }
 
 
 
@@ -110,7 +114,7 @@ const PetProfile = () => {
                     <h1 className="text-4xl font-bold my-3">{pet?.petname}</h1>
 
                     <div className="">
-                      <ProfileDetail label="Owner" value={pet?.owner.username} />
+                      <ProfileDetail label="Owner" value={pet?.owner?.username} />
                       <ProfileDetail label="Species" value={pet?.species} />
                       <ProfileDetail label="Breed" value={pet?.breed} />
                       <ProfileDetail label="Age" value={pet?.age} />

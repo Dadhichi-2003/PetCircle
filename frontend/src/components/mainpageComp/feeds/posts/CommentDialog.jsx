@@ -10,7 +10,7 @@ import { Link } from 'react-router-dom'
 import UserComment from './UserComment'
 import axios from 'axios'
 
-const CommentDialog = ({ open, setOpen }) => {
+const CommentDialog = ({ open, setOpen , updateCommentCount }) => {
     const [text, setText] = useState("");
     const { selectedPost } = useSelector(store => store.post);
     const [comment, setComment] = useState([]);
@@ -37,25 +37,27 @@ const CommentDialog = ({ open, setOpen }) => {
 
     const sendMessageHandler = async () => {
         try {
-
             const userId = user?._id;
-            const res = await axios.post(`posts/petpost/${selectedPost?._id}/addcomment`, { userId, content: text }, { withCredentials: true });
-
+            const res = await axios.post(
+                `/posts/petpost/${selectedPost?._id}/addcomment`, 
+                { userId, content: text }, 
+                { withCredentials: true }
+            );
+    
             if (res.data) {
-                const updatedCommentData = [...comment, res.data.comment];
-
-                setComment(updatedCommentData);
-
-                const updatedPostData = posts.map(p => p._id === selectedPost._id ? { ...p, comments: updatedCommentData } : p)
-                dispatch(setPosts(updatedPostData));
-                toast.success("comment added");
-                setText("")
+                const newComment = res.data.comment;
+                setComment(prev => [...prev, newComment]);
+                
+                // Notify `Post` component
+                updateCommentCount(newComment);
+    
+                toast.success("Comment added");
+                setText("");
             }
         } catch (err) {
             console.log(err);
-
         }
-    }
+    };
 
     return (
         <Dialog open={open}>

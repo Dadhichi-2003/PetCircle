@@ -7,7 +7,7 @@ import { readFileAsDataURL } from '@/lib/utils'
 import { setAuthUser } from '@/redux/user/authSlice'
 import axios from 'axios'
 import { Loader2 } from 'lucide-react'
-
+import { setUserProfile } from '@/redux/user/authSlice';
 import React, { useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
@@ -16,7 +16,8 @@ import { toast } from 'sonner'
 const EditUserProfile = ({open,setopen}) => {
 
     const[loading,setLoading] = useState(false)
-    const { user } = useSelector(store => store.auth)
+    const { user , userProfile } = useSelector(store => store.auth);
+    
     const { register, handleSubmit } = useForm({
         defaultValues: {
             username: "",
@@ -55,6 +56,7 @@ const EditUserProfile = ({open,setopen}) => {
         if (res.data) {
             toast.success(res.data.message)
             dispatch(setAuthUser(res.data.profile))
+            dispatch(setUserProfile(res.data.profile))
             setopen(false)
             
         }

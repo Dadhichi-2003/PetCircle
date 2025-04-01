@@ -15,7 +15,7 @@ const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const dispatch = useDispatch();
   const { likeNotification } = useSelector(store => store.realTimeNotification);
-  console.log(likeNotification)
+  
   const navigate = useNavigate();
   const { user } = useSelector(store => store.auth)
 
@@ -48,7 +48,7 @@ const Sidebar = () => {
 
   const menuItems = [
     { name: "Feed", icon: <FiHome />, path: "feeds" },
-    { name: "Profile", icon: <FiUser />, path: `profile/${user._id}` },
+    { name: "Profile", icon: <FiUser />, path: `profile/${user?._id}` },
     { name: "Messages", icon: <FiMessageSquare />, path: "messages" },
     { name: "Notifications", icon: <FiBell />, path: "feeds" },
     { name: "Community", icon: <FiUsers />, path: "community" },

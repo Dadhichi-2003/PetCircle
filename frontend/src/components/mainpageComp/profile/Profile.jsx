@@ -7,10 +7,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, Outlet, useLocation, useParams } from "react-router-dom";
 import PetProfileForm from "./PetProfileForm";
 import { MoreHorizontal } from "lucide-react";
-import { setAuthUser } from "@/redux/user/authSlice";
+import { setAuthUser, setUserProfile } from "@/redux/user/authSlice";
 import { toast } from "sonner";
 import EditUserProfile from "./EditUserProfile";
 import useGetUserProfile from "@/components/hooks/useGetUserProfile";
+import { setPosts } from "@/redux/post/postSlice";
 
 
 const Profile = () => {
@@ -20,49 +21,44 @@ const Profile = () => {
   const dispatch = useDispatch();
   const location = useLocation();
   const isNestedRoute = location.pathname.includes("petprofile");
- 
-
-  // useEffect(() => {
-  //   getuser();
-  // }, []);
-
   const params = useParams();
   const userId = params.id;
-  console.log(userId)
-  useGetUserProfile(userId)
-  const { userProfile, user } = useSelector(store => store.auth);
   
+  useGetUserProfile(userId)
+  const { userProfile } = useSelector(store => store.auth);
+ 
   console.log(userProfile)
-  // const getuser = async () => {
-  //   try {
-     
-  //     // const res = await axios.get(`/user/${user._id}`, { withCredentials: true });
-
-  //     // dispatch(setAuthUser(res.data.user));
-  //   } catch (error) {
-  //     console.error("Error fetching user data:", error);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
 
   const handleDeletePetProfile = async (petId) => {
     try {
       const res = await axios.delete(`/pet/deletepet/${petId}`, {
         withCredentials: true,
       });
-
+  
       if (res.status === 200) {
         toast.success("Profile deleted successfully");
-        getuser();
+  
+        // Redux State Update
+        const updatedPets = userProfile.pets.filter(pet => pet._id !== petId);
+  
+        dispatch(setAuthUser({
+          ...userProfile, 
+          pets: updatedPets
+        }));
+  
+        dispatch(setUserProfile({
+          ...userProfile, 
+          pets: updatedPets
+        }));
+  
+        // Fetch Latest User Profile
+        await useGetUserProfile(userId);
       }
     } catch (error) {
       console.error("Error deleting pet:", error);
-      toast.error("Error in deleting profile");
     }
   };
 
-  // if (loading) return <p className="text-center mt-10">Loading...</p>;
 
   return (
     <>
@@ -163,16 +159,17 @@ const Profile = () => {
                   </Dialog>
                 </div>
               ))}
-
+              {console.log(open)}
               {/* Add Pet Button */}
-              <Dialog>
+              <Dialog  open={open} onOpenChange={setopen}>
                 <DialogTrigger asChild>
-                  <button className="flex items-center justify-center p-4 bg-gray-100 rounded-lg border-2 border-dashed border-gray-300 hover:bg-gray-200 hover:shadow-lg transition-all">
-                    <span className="font-medium text-gray-700">+ Add Pet</span>
+                  <button onClick={()=>{setopen(true)}} className="flex items-center justify-center p-4 bg-gray-100 rounded-lg border-2 border-dashed border-gray-300 hover:bg-gray-200 hover:shadow-lg transition-all">
+                    <span   className="font-medium text-gray-700">+ Add Pet</span>
                   </button>
                 </DialogTrigger>
                 <DialogContent>
-                  <PetProfileForm />
+                   <PetProfileForm open={open} setopen={setopen} /> 
+                 
                 </DialogContent>
               </Dialog>
             </div>

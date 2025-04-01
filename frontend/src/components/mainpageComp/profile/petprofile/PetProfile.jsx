@@ -14,7 +14,7 @@ import EditPetProfile from "./EditPetProfile"
 import useGetPetPost from "@/components/hooks/useGetPetPost"
 
 const PetProfile = () => {
-  useGetPetPost();
+ 
   
   const [open, setOpen] = useState(false)
   const dispatch = useDispatch()
@@ -22,14 +22,11 @@ const PetProfile = () => {
   const { pet } = useSelector((store) => store.auth);
   const { petPost } = useSelector(store => store.post);
   console.log(petPost);
-  
-  const [count, setCount] = useState(0);
-  const navigate = useNavigate()
 
-  useEffect(() => {
-    profileDetails()
-    // getPetPost()
-  }, [petPost])
+  useGetPetPost()
+  
+
+
 
   function ProfileDetail({ label, value }) {
     return (
@@ -51,6 +48,9 @@ const PetProfile = () => {
     }
   }
 
+  useEffect(()=>{
+    profileDetails()
+  },[])
  
   // const getPetPost = async () => {
   //   try {

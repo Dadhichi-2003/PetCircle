@@ -15,7 +15,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'sonner'
 
 const CreatePost = ({open,setOpen}) => {
-   
+    // useGetPetPost();
     const imageRef = useRef();
     const [file, setFile] = useState("");
     const [caption, setCaption] = useState("");
@@ -86,7 +86,8 @@ const CreatePost = ({open,setOpen}) => {
             
             dispatch(setPosts([res.data.posts, ...posts])); // ✅ Redux update // [1] -> [1,2] -> total element = 2
             
-            dispatch(setpetPost([res.data.posts, ...petPost]));
+            dispatch(setpetPost([res.data.data, ...petPost]));
+            
 
             console.log(res.data.data)
            

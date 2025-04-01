@@ -2,7 +2,7 @@ const petModel = require("../models/PetModel")
 const multer = require("multer");
 const cloudinaryUtil = require("../utils/CloudinaryUtil");
 const userModel = require("../models/UserModel")
-
+const postModel = require("../models/PostModel")
 
 const storage = multer.diskStorage({
     // destination: "./uploads", // Optional if using Cloudinary
@@ -131,35 +131,39 @@ const addPetProfile = async (req, res) => {
 
   const deletePetProfile = async (req, res) => {
     try {
-      const { petId } = req.params;
-  
-      // Check if pet exists
-      const pet = await petModel.findById(petId);
-      if (!pet) {
-        return res.status(404).json({ message: "Pet not found" });
-      }
-  
-      // Remove pet reference from owner's pet list
-      await userModel.findByIdAndUpdate(
-        pet.owner,
-        { $pull: { pets: petId } },
-        { new: true }
-      );
-  
-      // Delete pet from database
-      await petModel.findByIdAndDelete(petId);
-  
-      res.status(200).json({
-        message: "Pet profile deleted successfully",
-        petId,
-      });
+        const { petId } = req.params;
+
+        // Check if pet exists
+        const pet = await petModel.findById(petId);
+        if (!pet) {
+            return res.status(404).json({ message: "Pet not found" });
+        }
+
+        // **Step 1: Delete all posts related to this pet**
+        await postModel.deleteMany({ pet: petId });
+
+        // **Step 2: Remove pet reference from owner's pet list**
+        await userModel.findByIdAndUpdate(
+            pet.owner,
+            { $pull: { pets: petId } },
+            { new: true }
+        );
+
+        // **Step 3: Delete the pet itself**
+        await petModel.findByIdAndDelete(petId);
+
+        res.status(200).json({
+            message: "Pet profile and associated posts deleted successfully",
+            petId,
+        });
     } catch (error) {
-      res.status(500).json({
-        message: "Error deleting pet profile",
-        error: error.message,
-      });
+        res.status(500).json({
+            message: "Error deleting pet profile",
+            error: error.message,
+        });
     }
-  };
+};
+
   
   const getPetProfileById = async (req, res) => {
     try {

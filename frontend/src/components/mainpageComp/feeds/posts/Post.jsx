@@ -24,7 +24,7 @@ const Post = ({ post }) => {
     const { pet } = useSelector(store => store.auth);
     const { posts } = useSelector(store => store.post);
 
-    console.log(post)
+    
 
     const [liked, setLiked] = useState(post?.likes?.includes(user._id) || false)
     const [postLike, setPostLike] = useState(post?.likes?.length || 0);
@@ -46,7 +46,7 @@ const Post = ({ post }) => {
     const deletePostHandler = async () => {
         try {
             const petId = pet?._id
-            const res = await axios.post(`posts/petpost/${post?._id}/deletepost`, petId, { withCredentials: true })
+            const res = await axios.post(`/posts/petpost/${post?._id}/deletepost`, petId, { withCredentials: true })
 
             const updatedPostData = posts.filter((postItem) => postItem?._id != post?._id);
             dispatch(setPosts(updatedPostData))
@@ -63,7 +63,7 @@ const Post = ({ post }) => {
     const likeOrDislikeHandler = async () => {
         try {
             
-    console.log(liked)
+    
             const action = liked ? "dislike" : "like";
 
             const res = await axios.get(`/posts/petpost/${post?._id}/${action}`, { withCredentials: true });
@@ -92,13 +92,14 @@ const Post = ({ post }) => {
         try {
 
             const userId = user?._id;
-            const res = await axios.post(`posts/petpost/${post?._id}/addcomment`, { userId, content: text }, { withCredentials: true });
+            const res = await axios.post(`/posts/petpost/${post?._id}/addcomment`, { userId, content: text }, { withCredentials: true });
 
             if (res.data) {
                 const updatedCommentData = [...comment, res.data.comment];
             
                 setComment(updatedCommentData);
                 
+
                 const updatedPostData = posts.map(p => p._id === post._id ? { ...p, comments: updatedCommentData } : p)
                 dispatch(setPosts(updatedPostData));
                 toast.success("comment added");
@@ -160,24 +161,29 @@ const Post = ({ post }) => {
                     <Send className='cursor-pointer hover:text-gray-600' />
                 </div>
             </div>
-            <span className='font-medium block '>{postLike} likes</span>
+            <span className='font-medium block '> {postLike === 1 ? `${postLike} like ` : `${postLike} likes`}</span>
             <p>
                 <span className='font-medium mr-2'>{post?.pet?.petname}</span>
                 {post?.caption || "No caption available"}
 
-            </p>
+            </p>    
+           
 
             {
                 comment?.length > 0 && (
                     <span onClick={() => {
                         dispatch(setSelectedPost(post));
                         setOpen(true);
-                    }} className='cursor-pointer text-sm text-gray-400'>View all {comment.length} comments</span>
+                        console.log(post.comments.length)
+                    }} className='cursor-pointer text-sm text-gray-400'>View all {post.comments?.length} comments</span>
                 )
             }
 
            
-            <CommentDialog open={open} setOpen={setOpen} />
+            <CommentDialog open={open} setOpen={setOpen} updateCommentCount={(newComment) => {
+                setComment(prev => [...prev, newComment]);
+                     dispatch(setPosts(posts.map(p => p._id === post._id ? { ...p, comments: [...p.comments, newComment] } : p)));
+}}  />
 
             <div className='flex items-center justify-between'>
                 <input type='text ' value={text} placeholder='add a comment' className='outline-none text-sm w-full' onChange={changeEventHandler} />

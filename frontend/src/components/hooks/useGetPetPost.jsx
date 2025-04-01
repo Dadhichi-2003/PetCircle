@@ -23,7 +23,7 @@ const useGetPetPost = () => {
         };
 
         getPetPost();
-    }, [dispatch, pet]); // Dependencies
+    }, [dispatch , pet]); // Dependencies
 
 };
 

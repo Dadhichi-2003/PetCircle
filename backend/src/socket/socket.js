@@ -26,7 +26,7 @@ io.on('connection',(socket)=>{
     }
     io.emit('getOnlineUser',Object.keys(UserSocketMap));
     console.log(UserSocketMap)
-    socket.on('disconnet',()=>{
+    socket.on('disconnect',()=>{
         if(userId){
             console.log(`User connected : userID = ${userId},SocketId = ${socket.id}`);
         }

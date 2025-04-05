@@ -23,6 +23,10 @@
             type:Schema.Types.ObjectId,
             ref:"Comment"
         }],
+        postedBy:{
+            type:Schema.Types.ObjectId,
+            ref:"User"
+        }
 
     },{
         timestamps:true,

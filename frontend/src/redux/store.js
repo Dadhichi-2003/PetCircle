@@ -4,6 +4,7 @@ import postSlice from "../redux/post/postSlice"
 import socketSlice from './socket/socketSlice'
 import chatSlice from './chat/chatSlice'
 import rtnSlice from './chat/rtnSlice'
+import communitySlice from './community/communitySlice'
 
 import {
     persistReducer,
@@ -24,7 +25,8 @@ import {
     post:postSlice,
     socketio:socketSlice,
     chat :chatSlice,
-    realTimeNotification:rtnSlice
+    realTimeNotification:rtnSlice,
+    community:communitySlice
   })
 
   const persistConfig = {

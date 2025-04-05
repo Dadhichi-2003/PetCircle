@@ -13,8 +13,7 @@ const useGetAllMessage = () => {
         const fetchAllMessage = async () => {
             try {
                 const res = await axios.get(`/messages/message/${selectedUser?._id}`, { withCredentials: true });
-                if (res.data) {  
-                    console.log(res.data.newMessage)
+                if (res.data.success) {  
                     dispatch(setMessages(res.data.messages));
                 }
             } catch (error) {
@@ -25,3 +24,5 @@ const useGetAllMessage = () => {
     }, [selectedUser]);
 };
 export default useGetAllMessage;
+
+

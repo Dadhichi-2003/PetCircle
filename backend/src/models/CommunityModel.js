@@ -8,6 +8,10 @@ const communitySchema = new Schema({
         unique:true,
         required:true
     },
+    poster:{
+        type:String,
+        
+    },
     description:{
         type:String,
         required:true

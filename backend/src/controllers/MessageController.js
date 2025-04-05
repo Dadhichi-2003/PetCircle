@@ -13,7 +13,6 @@ const sendMessage = async (req, res) => {
             participants: { $all: [senderId, receiverId] }
         });
 
-        // Establish the conversation if not started yet.
         if (!conversation) {
             conversation = await Conversation.create({
                 participants: [senderId, receiverId]
@@ -26,49 +25,52 @@ const sendMessage = async (req, res) => {
             message
         });
 
-        // Add message to conversation
         conversation.messages.push(newMessage._id);
         await conversation.save();
 
-        // Emit socket event before sending response
+        // ✅ Emit socket event **before** sending response
         const receiverSocketId = getReceiverSocketId(receiverId);
-        if(receiverSocketId){
+        if (receiverSocketId) {
             io.to(receiverSocketId).emit('newMessage', newMessage);
         }
+        await Promise.all([conversation.save(),newMessage.save()])
 
-        // Now send the response
-        res.status(200).json({
-            message: "Message sent successfully",
-            newMessage
-        });
+        res.status(200).json({ message: "Message sent successfully", newMessage });
 
     } catch (error) {
-        if (!res.headersSent) {  // Prevent multiple responses
-            res.status(500).json({
-                message: "Error sending message",
-                error: error.message
-            });
+        if (!res.headersSent) {
+            res.status(500).json({ message: "Error sending message", error: error.message });
         }
     }
 };
 
 
 
-const getMessage = async (req,res) => {
+
+const getMessage = async (req, res) => {
     try {
         const senderId = req.id;
         const receiverId = req.params.id;
-        const conversation = await Conversation.findOne({
-            participants:{$all: [senderId, receiverId]}
-        }).populate('messages');
-        if(!conversation) return res.status(200).json({success:true, messages:[]});
 
-        return res.status(200).json({success:true, messages:conversation?.messages});
-        
+        const conversation = await Conversation.findOne({
+            participants: { $all: [senderId, receiverId] }
+        }).populate({
+            path: 'messages',
+            options: { sort: { createdAt: 1 } } // ✅ Fix: Oldest messages first
+        });
+
+        if (!conversation) {
+            return res.status(200).json({ success: true, messages: [] });
+        }
+
+        return res.status(200).json({ success: true, messages: conversation.messages });
+
     } catch (error) {
         console.log(error);
+        res.status(500).json({ message: "Error fetching messages" });
     }
-}
+};
+
 
 module.exports={
     getMessage,

@@ -96,7 +96,7 @@ const addPetProfile = async (req, res) => {
           return res.status(404).json({ message: "Pet not found" });
         }
   
-        let profilePic = pet.profilePic; // ✅ पहले से मौजूद इमेज डिफ़ॉल्ट रखी
+        let profilePic = pet.profilePic; 
   
         if (req.file) {
           const cloudinaryResponse = await cloudinaryUtil.uploadFileToCloudinary(req.file);
@@ -105,7 +105,7 @@ const addPetProfile = async (req, res) => {
   
         const { petname, species, breed, age, medicalHistory } = req.body;
   
-        // ✅ अब इमेज तभी अपडेट होगी जब नई इमेज दी जाएगी
+   
         if (req.file) {
           pet.profilePic = profilePic;
         }

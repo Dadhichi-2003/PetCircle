@@ -52,7 +52,7 @@ const Sidebar = () => {
     { name: "Messages", icon: <FiMessageSquare />, path: "messages" },
     { name: "Notifications", icon: <FiBell />, path: "feeds" },
     { name: "Community", icon: <FiUsers />, path: "community" },
-    { name: "Adoption", icon: <FiHeart />, path: "profile" },
+    { name: "Adoption", icon: <FiHeart />, path: "adoption" },
     { name: "Logout", icon: <FiLogOut />, path: "/logout", action: handleLogout },
   ];
 

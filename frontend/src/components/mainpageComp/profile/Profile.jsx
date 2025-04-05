@@ -1,33 +1,36 @@
 import { Dialog, DialogTrigger, DialogContent } from "@/components/ui/dialog";
 import store from "@/redux/store";
-import { Button } from "@headlessui/react";
+
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, Outlet, useLocation, useParams } from "react-router-dom";
+import { Link, Outlet, useLocation, useNavigate, useParams } from "react-router-dom";
 import PetProfileForm from "./PetProfileForm";
 import { MoreHorizontal } from "lucide-react";
-import { setAuthUser, setUserProfile } from "@/redux/user/authSlice";
+import { setAuthUser, setSelectedUser, setUserProfile } from "@/redux/user/authSlice";
 import { toast } from "sonner";
 import EditUserProfile from "./EditUserProfile";
 import useGetUserProfile from "@/components/hooks/useGetUserProfile";
-import { setPosts } from "@/redux/post/postSlice";
+import { Button } from "@/components/ui/button";
+
 
 
 const Profile = () => {
 
   const[open,setopen]=useState(false)
-  const [loading, setLoading] = useState(true);
+  const [editProfileOpen, setEditProfileOpen] = useState(false);
   const dispatch = useDispatch();
   const location = useLocation();
   const isNestedRoute = location.pathname.includes("petprofile");
   const params = useParams();
   const userId = params.id;
   
+
   useGetUserProfile(userId)
-  const { userProfile } = useSelector(store => store.auth);
- 
-  console.log(userProfile)
+  const { userProfile ,user } = useSelector(store => store.auth);
+ console.log(userProfile)
+
+  console.log(user)
 
   const handleDeletePetProfile = async (petId) => {
     try {
@@ -58,6 +61,47 @@ const Profile = () => {
       console.error("Error deleting pet:", error);
     }
   };
+
+  const handleFollowUnfollow = async () => {
+    try {
+      const res = await axios.post(`/followorunfollow/${userId}`, {}, { withCredentials: true });
+      if (res.status === 200) {
+        toast.success(res.data.message);
+
+        const updatedFollowing = res.data.message.includes("Unfollow")
+          ? user.following.filter((id) => id !== userId)
+          : [...user.following, userId];
+
+        const updatedFollowers = res.data.message.includes("Unfollow")
+          ? userProfile.followers.filter((id) => id !== user._id)
+          : [...userProfile.followers, user._id];
+
+        dispatch(
+          setAuthUser({
+            ...user,
+            following: updatedFollowing,
+          })
+        );
+
+        dispatch(
+          setUserProfile({
+            ...userProfile,
+            followers: updatedFollowers,
+          })
+        );
+      }
+    } catch (error) {
+      console.error("Follow/Unfollow error:", error);
+      toast.error("Something went wrong!");
+    }
+  };
+  const navigate =useNavigate()
+  const handleMessageClick = () => {
+    dispatch(setSelectedUser(userProfile)); // ✅ Select user
+    navigate(`/main/messages/${userProfile?._id}`); // ✅ Navigate to chat page
+  };
+
+  const isFollowing= user.following.includes(userId)
 
 
   return (
@@ -99,18 +143,36 @@ const Profile = () => {
             <div className="flex md:self-start flex-col">
               
 
-
+            {
+              userId === user._id ? (
               <Dialog>
                 <DialogTrigger asChild>
-                <Button onClick={()=>{setopen(true)}} className="bg-gray-600 p-2 rounded cursor-pointer text-white my-5">Edit Profile</Button>
+                 <Button onClick={() => setEditProfileOpen(true)} className="bg-gray-600 p-2 rounded cursor-pointer text-white my-5">Edit Profile</Button>
                 </DialogTrigger>
               {
-                open && <DialogContent className="w-fit">
-                            <EditUserProfile open={open} setopen={setopen}/>
-                        </DialogContent>
+                editProfileOpen && 
+                  <DialogContent className="w-fit">
+                    <EditUserProfile open={editProfileOpen} setopen={setEditProfileOpen}/>
+                     
+                  </DialogContent>
               }
                 
               </Dialog>
+              
+            ):(
+                <>
+                {  isFollowing ? (
+                  <>
+                    <Button variant='secondary' className='h-8 my-1 w-25'  onClick={handleFollowUnfollow } >Unfollow</Button>
+                    <Button variant='secondary'  className='h-8 my-1 w-25'  onClick={handleMessageClick} >Message</Button>
+                  </>
+                ) : (
+                  <Button  className='bg-[#0095F6] hover:bg-[#3192d2] h-8'  onClick={handleFollowUnfollow} >Follow</Button>
+                ) }
+                </>
+              )
+            }
+              
               
             </div>
 

@@ -8,16 +8,18 @@ import { Input } from '../ui/input';
 import { Button } from '../ui/button';
 import axios from 'axios';
 import { setMessages } from '@/redux/chat/chatSlice';
+import { Link, useNavigate } from 'react-router-dom';
 
 const ChatPage = () => {
   const { user, suggestedUsers ,selectedUser } = useSelector(store => store.auth);
   const {onlineUsers,messages }= useSelector(store=>store.chat)
   const dispatch = useDispatch()
   const [textMessage ,setTextMessage] = useState("");
+  const {socket} =useSelector(store=>store.socketio)
   
   const sendMessageHandler = async(receiverId) =>{
     try{
-      const res = await axios.post(`messages/message/${receiverId}`,{textMessage},{ withCredentials: true,headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }});
+      const res = await axios.post(`/messages/message/${receiverId}`,{textMessage},{ withCredentials: true,headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }});
       if(res.data){
         dispatch(setMessages([...messages,res.data.newMessage]));
         setTextMessage('')
@@ -29,25 +31,51 @@ const ChatPage = () => {
    
 
   }
+  useEffect(() => {
+    socket?.on("newMessage", (newMessage) => {
+      dispatch(setMessages([...messages, newMessage])); // ✅ Redux update
+    });
+  
+    return () => {
+      socket?.off("newMessage"); // ✅ Prevent memory leak
+    };
+  }, [socket, messages, dispatch]);
+
+  const navigate = useNavigate()
 
   useEffect(()=>{
     return()=>{
       dispatch(setSelectedUser(null));
+      dispatch(setMessages([])); // ✅ Also clear messages on logout
     }
-  },[])
+  },[]);
 
+ 
+
+  const handleUserClick = (suggestedUser) => {
+    dispatch(setSelectedUser(suggestedUser));
+  };
+  
+  useEffect(() => {
+    if (selectedUser?._id) {
+      navigate(`/main/messages/${selectedUser._id}`);
+    }
+  }, [selectedUser, navigate]);
+
+  const isOnline = onlineUsers?.some((userId) => userId === suggestedUsers._id);
+  console.log(onlineUsers)
   return (
     <div className='flex h-screen md:ml-[20%]  w-full  '>
-      <section className='w-full md:w-1/4 my-8'>
+      <section className='w-[50%] md:w-1/4 my-8'>
         <h1 className='font-bold mb-4 px-3 text-xl'> {user?.username}</h1>
         <hr className='mb-4 border-gray-300' />
         <div className='overflow-y-auto h-[80vh]'>
           {
             suggestedUsers?.map((suggestedUser) => {
-              const isOnline =onlineUsers.includes(suggestedUser._id);
+              {isOnline ? 'online' : 'offline'}
               return (
               
-                <div  onClick={() => dispatch(setSelectedUser(suggestedUser))}  className='flex gap-3 items-center p-3 hover:bg-gray-50 cursor-pointer'>
+                <div  onClick={() => handleUserClick(suggestedUser)}   className='flex gap-3 items-center p-3 hover:bg-gray-50 cursor-pointer'>
                   <Avatar  className='w-14 h-14'>
                     <AvatarImage src={suggestedUser?.profilePic} />
                     <AvatarFallback>CN</AvatarFallback>
@@ -64,9 +92,12 @@ const ChatPage = () => {
           }
           </div>
           </section>
+          
           {
                 selectedUser ? (
-                    <section className='flex-1  border-l border-l-gray-300 flex flex-col h-full'>
+
+                  
+                      <section className='flex-1  border-l border-l-gray-300 flex flex-col h-full'>
                         <div className='flex gap-3 items-center px-3 py-2 border-b border-gray-300 sticky top-0 bg-white z-10'>
                             <Avatar>
                                 <AvatarImage src={selectedUser?.profilePic} alt='profile' />
@@ -82,6 +113,10 @@ const ChatPage = () => {
                             <Button variant='secondary' onClick={() => sendMessageHandler(selectedUser?._id)}>Send</Button>
                         </div>
                     </section>
+
+             
+                
+                    
                 ) : (
                     <div className='flex flex-col items-center justify-center mx-auto'>
                         <MessageCircleCode className='w-32 h-32 my-4' />
@@ -91,7 +126,7 @@ const ChatPage = () => {
                 )
             }
 
-        
+            
       
     </div>
   )

@@ -18,6 +18,9 @@ import { useDispatch, useSelector } from 'react-redux'
 import { setSocket } from './redux/socket/socketSlice'
 import { setOnlineUsers } from './redux/chat/chatSlice'
 import { setLikeNotification } from './redux/chat/rtnSlice'
+import Messages from './components/chatComp/Messages'
+import AdoptionPage from './pages/AdoptionPage'
+import CommunityProfile from './components/communityComp/CommunityProfile'
 
 
 function App() {
@@ -77,8 +80,14 @@ function App() {
           //index element feed
             <Route index element={<Feeds />} />
             <Route path='feeds' element={<Feeds />} />
-            <Route path='messages' element={<ChatPage />} />
+            <Route path='messages' element={<ChatPage />} >
+                <Route path=':id' element={<Messages/>} ></Route>
+            </Route>
             <Route path='community' element={<CommunityPage/>}/>
+            <Route path='community/:id' element={<CommunityProfile/>}></Route>
+              
+          
+            <Route path='adoption' element={<AdoptionPage/>}/>
            
             
             <Route path='profile/:id' element={<Profile />} >

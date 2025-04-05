@@ -32,9 +32,10 @@ const Login = () => {
         }
       }
     } catch (error) {
-      if (error.response && error.response.status === 404) {
+        console.log(error);
+        
         toast.error("invalid Credentials !");
-      }
+      
     }
   };
 

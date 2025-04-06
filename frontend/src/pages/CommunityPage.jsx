@@ -142,10 +142,10 @@ const CommunityPage = () => {
                 {
                   allCommunities?.map((community) => {
                     return <>
-
+                      
                       {
                         user?.joinedCommunities.includes(community?._id) && <>
-
+                          <Link to={`/main/community/${community?._id}`}>
                           <div key={community?._id} className="grid grid-cols-1 gap-4 my-2 cursor-pointer">
                             {/* Community Row 1 */}
                             <div className="bg-white rounded-lg shadow-md p-4 flex items-center">
@@ -157,13 +157,14 @@ const CommunityPage = () => {
                               <div className="flex-1">
                                 <h3 className="font-medium text-gray-900">{community?.name}</h3>
                                 <p className="text-sm text-gray-500 mb-1">{community?.members.length} {community?.members.length > 1 ? `members` : `member`}</p>
-                                <p className="text-sm text-gray-600 line-clamp-2">
+                                <p className="text-sm text-gray-600 w-150 line-clamp-2">
                                   {community?.description}
                                 </p>
                               </div>
 
                             </div>
                           </div>
+                          </Link>
                         </>
 
 
@@ -193,6 +194,7 @@ const CommunityPage = () => {
                         !(user?._id === community?.createdBy) && !(user?.joinedCommunities.includes(community?._id)) &&
 
                         <>
+                           <Link to={`/main/community/${community?._id}`}>
                           {/* Community Card  */}
                           <div className="bg-white rounded-lg shadow-md overflow-hidden w-fit cursor-pointer ">
                             <div className="h-32 bg-teal-600 relative">
@@ -215,6 +217,7 @@ const CommunityPage = () => {
                               </div>
                             </div>
                           </div>
+                          </Link>
                         </>
                       }
                     </>
@@ -236,3 +239,4 @@ const CommunityPage = () => {
 }
 
 export default CommunityPage
+

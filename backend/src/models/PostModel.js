@@ -26,6 +26,10 @@
         postedBy:{
             type:Schema.Types.ObjectId,
             ref:"User"
+        },
+        community:{
+            type:Schema.Types.ObjectId,
+            ref:"Community"
         }
 
     },{

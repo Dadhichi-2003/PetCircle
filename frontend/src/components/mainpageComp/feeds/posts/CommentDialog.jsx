@@ -14,9 +14,8 @@ const CommentDialog = ({ open, setOpen , updateCommentCount }) => {
     const [text, setText] = useState("");
     const { selectedPost } = useSelector(store => store.post);
     const [comment, setComment] = useState([]);
-    const dispatch = useDispatch();
     const { user } = useSelector(store => store.auth);
-    const{posts} = useSelector(store=>store.post)
+   
 
 
     const changeEventHandler = (e) => {
@@ -50,9 +49,9 @@ const CommentDialog = ({ open, setOpen , updateCommentCount }) => {
                 
                 // Notify `Post` component
                 updateCommentCount(newComment);
-    
-                toast.success("Comment added");
                 setText("");
+                toast.success("Comment added");
+                
             }
         } catch (err) {
             console.log(err);
@@ -62,7 +61,7 @@ const CommentDialog = ({ open, setOpen , updateCommentCount }) => {
     return (
         <Dialog open={open}>
             <DialogContent onInteractOutside={() => setOpen(false)} className="w-max-5xl h-fit p-0 flex flex-col">
-                <div className='flex flex-1'>
+                <div className='flex flex-1 w-full '>
                     <div className='w-1/2'>
                         <img
                             src={selectedPost?.media}
@@ -75,12 +74,12 @@ const CommentDialog = ({ open, setOpen , updateCommentCount }) => {
                             <div className='flex gap-3 items-center'>
                                 <Link>
                                     <Avatar>
-                                        <AvatarImage src={selectedPost?.pet.profilePic} />
+                                        <AvatarImage src={selectedPost?.pet?.profilePic || selectedPost?.postedBy.profilePic} />
                                         <AvatarFallback>CN</AvatarFallback>
                                     </Avatar>
                                 </Link>
                                 <div>
-                                    <Link className='font-semibold text-xs'>{selectedPost?.pet.petname}</Link>
+                                    <Link className='font-semibold text-xs'>{selectedPost?.pet?.petname || selectedPost?.postedBy.username}</Link>
                                     {/* <span className='text-gray-600 text-sm'>Bio here...</span> */}
                                 </div>
                             </div>
@@ -103,12 +102,12 @@ const CommentDialog = ({ open, setOpen , updateCommentCount }) => {
                         <div className='flex gap-3 items-center px-4 pt-3 '>
                             <Link>
                                 <Avatar>
-                                    <AvatarImage src={selectedPost?.pet.profilePic} />
+                                    <AvatarImage src={selectedPost?.pet?.profilePic || selectedPost?.postedBy.profilePic} />
                                     <AvatarFallback>CN</AvatarFallback>
                                 </Avatar>
                             </Link>
                             <div>
-                                <Link className='font-semibold text-xs'>{selectedPost?.pet.petname}</Link>
+                                <Link className='font-semibold text-xs'>{selectedPost?.pet?.petname || selectedPost?.postedBy.username}</Link>
                                 <span className='text-gray-600 text-sm ml-2'>{selectedPost?.caption}</span>
                             </div>
                         </div>

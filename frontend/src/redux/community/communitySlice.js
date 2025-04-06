@@ -4,7 +4,9 @@ const communitySlice = createSlice({
     name:'community',
     initialState:{
         allCommunities : [],
-        communityDetail : null
+        communityDetail : null,
+        communityPosts:[],
+        getsingleCommPost : []
     },
     reducers:{
 
@@ -13,6 +15,12 @@ const communitySlice = createSlice({
         },
         setCommDetail : (state,action) => {
             state.communityDetail = action.payload
+        },
+        setAllCommPost:(state,action)=>{
+            state.communityPosts = action.payload
+        },
+        setCommPost:(state,action)=>{
+            state.getsingleCommPost = action.payload
         }
 
     }
@@ -21,5 +29,5 @@ const communitySlice = createSlice({
 
 });
 
-export const  { setAllComm ,setCommDetail } = communitySlice.actions;
+export const  { setAllComm ,setCommDetail,setAllCommPost,setCommPost } = communitySlice.actions;
 export default communitySlice.reducer;

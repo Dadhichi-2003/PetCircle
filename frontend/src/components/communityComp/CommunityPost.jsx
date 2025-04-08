@@ -11,6 +11,8 @@ import axios from 'axios'
 import { useParams } from 'react-router-dom'
 import { toast } from 'sonner'
 import { setAllCommPost, setCommPost } from '@/redux/community/communitySlice'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../ui/dropdown-menu'
+import { PiDotsThreeBold } from 'react-icons/pi'
 
 const CommunityPost = ({ open, setOpen }) => {
 
@@ -49,7 +51,7 @@ const CommunityPost = ({ open, setOpen }) => {
 
             const res = await axios.post(`/community/addcommunitypost/${communityId}`, formData, { withCredentials: true });
             if (res.data) {
-                
+
                 dispatch(setAllCommPost([...communityPosts, res.data.post]))
                 dispatch(setCommPost([...getsingleCommPost, res.data.post]))
                 setOpen(false)
@@ -68,49 +70,54 @@ const CommunityPost = ({ open, setOpen }) => {
     }
     return (
         <>
-         <div>
-            <div className='  '>
-                <div className='flex justify-start items-center gap-3 md:m-4'>
-                    <Avatar className='size-12'>
-                        <AvatarImage src={user?.profilePic}></AvatarImage>
-                        <AvatarFallback>CN</AvatarFallback>
-                    </Avatar>
-                    <h3 className='font-semibold '>{user?.username}</h3>
-                </div>
+            <div>
+                <div className='  '>
+                    <div className='flex justify-start items-center gap-3 md:m-4'>
 
-                <div className='m-4'>
-                    <textarea value={caption} onChange={(e) => { setCaption(e.target.value) }} type='text' rows={3} className='border-none text-lg w-full  rounded ring-white' placeholder='say something to community...'></textarea>
-                </div>
-                {
-                    imagePreview && (
-                        <div className='w-full h-90 flex items-center justify-center mb-3 md:mb-0'>
-                            <img src={imagePreview} alt="preview_img" className='object-cover h-full w-full rounded-md md:mx-4  ' />
-                        </div>
-                    )
-                }
-                <div className='flex justify-between items-center  md:m-4'>
-                    <input ref={imageRef} type='file' className='hidden' onChange={fileChangeHandler} />
-                    <button onClick={() => imageRef.current.click()} className="flex items-center justify-center md:w-50  text-teal-900 hover:bg-teal-200 hover:text-gray-800 px-3 py-1 rounded-md">
-                        <Image size={22} className="mr-2" />
-                        {/* //isme send button ayega or text ilkhte hi send aa ayega or user foto selecet kreg to file selection ayega preview kw sath */}
-                        <span className='font-semibold text-lg'>Photo</span>
-                    </button>
+                        <Avatar className='size-12'>
+                            <AvatarImage src={user?.profilePic}></AvatarImage>
+                            <AvatarFallback>CN</AvatarFallback>
+                        </Avatar>
+                        <h3 className='font-semibold '>{user?.username}</h3>
+
+
+
+
+                    </div>
+
+                    <div className='m-4'>
+                        <textarea value={caption} onChange={(e) => { setCaption(e.target.value) }} type='text' rows={3} className='border-none text-lg w-full  rounded ring-white' placeholder='say something to community...'></textarea>
+                    </div>
                     {
-                        loading ?
-                            <Button className="flex justify-center items-center text-gray-800 hover:bg-teal-500 hover:text-gray-700 bg-teal-400  w-50   px-3 py-1 rounded-md">
-                                <Loader2 size={22} className='mr-2 h-4 w-4 animate-spin text-white' />
-                                <span className='font-semibold text-lg'>Please wait</span>
-                            </Button> :
-                            <button className="flex justify-center items-center text-gray-800 hover:bg-teal-500 hover:text-gray-700 bg-teal-400  w-50   px-3 py-1 rounded-md">
-                                <SendHorizontal onClick={() => { createCommunityPostHandler() }} size={22} className="mr-2" />
-                                {/* //isme send button ayega or text ilkhte hi send aa ayega or user foto selecet kreg to file selection ayega preview kw sath */}
-                                <span className='font-semibold text-lg'>Post</span>
-                            </button>
+                        imagePreview && (
+                            <div className='w-full h-90 flex items-center justify-center mb-3 md:mb-0'>
+                                <img src={imagePreview} alt="preview_img" className='object-cover h-full w-full rounded-md md:mx-4  ' />
+                            </div>
+                        )
                     }
+                    <div className='flex justify-between items-center  md:m-4'>
+                        <input ref={imageRef} type='file' className='hidden' onChange={fileChangeHandler} />
+                        <button onClick={() => imageRef.current.click()} className="flex items-center justify-center md:w-50  text-teal-900 hover:bg-teal-200 hover:text-gray-800 px-3 py-1 rounded-md">
+                            <Image size={22} className="mr-2" />
+                            {/* //isme send button ayega or text ilkhte hi send aa ayega or user foto selecet kreg to file selection ayega preview kw sath */}
+                            <span className='font-semibold text-lg'>Photo</span>
+                        </button>
+                        {
+                            loading ?
+                                <Button className="flex justify-center items-center text-gray-800 hover:bg-teal-500 hover:text-gray-700 bg-teal-400  w-50   px-3 py-1 rounded-md">
+                                    <Loader2 size={22} className='mr-2 h-4 w-4 animate-spin text-white' />
+                                    <span className='font-semibold text-lg'>Please wait</span>
+                                </Button> :
+                                <button className="flex justify-center items-center text-gray-800 hover:bg-teal-500 hover:text-gray-700 bg-teal-400  w-50   px-3 py-1 rounded-md">
+                                    <SendHorizontal onClick={() => { createCommunityPostHandler() }} size={22} className="mr-2" />
+                                    {/* //isme send button ayega or text ilkhte hi send aa ayega or user foto selecet kreg to file selection ayega preview kw sath */}
+                                    <span className='font-semibold text-lg'>Post</span>
+                                </button>
+                        }
 
+                    </div>
                 </div>
-            </div>
-        </div></>
+            </div></>
     )
 }
 

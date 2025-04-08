@@ -163,7 +163,7 @@ const Profile = () => {
                 <>
                 {  isFollowing ? (
                   <>
-                    <Button variant='secondary' className='h-8 my-1 w-25'  onClick={handleFollowUnfollow } >Unfollow</Button>
+                    <Button variant='secondary' className='h-8 my-1 w-25 bg-primary text-primary-foreground'  onClick={handleFollowUnfollow } >Unfollow</Button>
                     <Button variant='secondary'  className='h-8 my-1 w-25'  onClick={handleMessageClick} >Message</Button>
                   </>
                 ) : (

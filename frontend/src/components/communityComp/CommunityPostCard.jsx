@@ -1,26 +1,29 @@
-import { setAllCommPost } from '@/redux/community/communitySlice'
+import { setAllComm, setAllCommPost, setCommDetail, setCommPost } from '@/redux/community/communitySlice'
 import { setSelectedPost } from '@/redux/post/postSlice'
 import { ChevronDown, MessageCircle } from 'lucide-react'
 import React, { useState } from 'react'
 
 import { useDispatch, useSelector } from 'react-redux'
-import { Link } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import CommentDialog from '../mainpageComp/feeds/posts/CommentDialog'
 import { FaHeart, FaRegHeart } from 'react-icons/fa'
 import axios from 'axios'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../ui/dropdown-menu'
+import { PiDotsThreeBold } from 'react-icons/pi'
+import { toast } from 'sonner'
 
 const CommunityPostCard = ({ post }) => {
 
     const { user } = useSelector(store => store.auth)
-    const { communityPosts } = useSelector(store => store.community);
+    const { communityPosts , communityDetail,allCommunities,getsingleCommPost} = useSelector(store => store.community);
     const latestPost = useSelector(state =>
         state.community.communityPosts.find(p => p._id === post._id)
-      ) || post; // fallback if not found
+    ) || post; // fallback if not found
 
     const [liked, setLiked] = useState(post?.likes?.includes(user._id) || false)
     const [postLike, setPostLike] = useState(post?.likes?.length || 0);
+    const communityId = useParams().id
 
-   
     const [open, setOpen] = useState(false);
 
 
@@ -53,12 +56,58 @@ const CommunityPostCard = ({ post }) => {
 
         } catch (err) {
             console.log(err);
+            toast.error("Failed to delete post ")
         }
     }
 
 
 
 
+
+    const communityPostDeleteHandler = async () => {
+        try {
+
+            const res = await axios.delete(`/community/${communityId}/post/${post._id}`, { withCredentials: true })
+            if (res.data.success) {
+                toast.success("Post deleted successfully");
+
+                // 👇 Update community detail posts
+                const updatedPosts = communityDetail.posts.filter(p => p._id !== post._id);
+                const updatedCommunityDetail = {
+                  ...communityDetail,
+                  posts: updatedPosts
+                };
+          
+                dispatch(setCommDetail(updatedCommunityDetail));
+          
+                // (Optional) Update allCommunities list if you're showing latest posts there
+                const updatedAllComm = allCommunities.map(comm => {
+                  if (comm._id === communityDetail._id) {
+                    return {
+                      ...comm,
+                      posts: comm.posts?.filter(p => p._id !== post._id) || []
+                    };
+                  }
+                  return comm;
+                });
+          
+                dispatch(setAllComm(updatedAllComm));
+
+
+                const updatedCommPosts = communityPosts.filter(p => p._id !== post._id);
+                  dispatch(setAllCommPost(updatedCommPosts));
+
+                const updatedSingleCommPosts = getsingleCommPost.filter(p => p._id !== post._id);
+                dispatch(setCommPost(updatedSingleCommPosts));
+            }
+
+        } catch (err) {
+            console.log(err);
+
+        }
+    }
+
+    
     const formatDate = (dateString) => {
         const options = { year: "numeric", month: "long", day: "numeric" }
         return new Date(dateString).toLocaleDateString(undefined, options)
@@ -74,9 +123,6 @@ const CommunityPostCard = ({ post }) => {
         if (diffInSeconds < 604800) return `${Math.floor(diffInSeconds / 86400)} days ago`
         return formatDate(dateString)
     }
-
-
-
     return (
         <div key={post._id} className="bg-white rounded-lg shadow-md overflow-hidden ">
             {/* Post Header */}
@@ -92,10 +138,18 @@ const CommunityPostCard = ({ post }) => {
                         <p className="text-xs text-gray-500">{formatTimeAgo(post?.createdAt)}</p>
                     </div>
                 </Link>
+                {
+                (post.postedBy._id === user._id || communityDetail?.createdBy === user._id) 
+                
+                && <DropdownMenu>
+                    <DropdownMenuTrigger><PiDotsThreeBold className='size-7' /></DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                        <DropdownMenuItem><button onClick={() => { communityPostDeleteHandler() }} className='text-red-600  cursor-pointer text-center'> delete  </button></DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+                }
 
-                <button className="p-1 rounded-full hover:bg-gray-100">
-                    <ChevronDown size={20} />
-                </button>
+
             </div>
 
             {/* Post Content */}
@@ -119,6 +173,7 @@ const CommunityPostCard = ({ post }) => {
 
             {/* Post Stats */}
             <div className="px-6 py-2 border-t border-gray-100 flex justify-between text-sm text-gray-500">
+
                 <div>
                     {latestPost?.likes.length > 0 && (
                         <span className='font-medium block '> {postLike === 1 ? `${postLike} like ` : `${postLike} likes`}</span>

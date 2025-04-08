@@ -12,6 +12,7 @@ const HeroSection = () => {
           <h1 className="max-w-2xl mb-4 text-3xl font-extrabold tracking-tight leading-tight md:text-5xl lg:text-6xl dark:text-white">
             Find Your Perfect Pet Companion!
           </h1>
+          
           <p className="max-w-2xl mb-6 font-light text-gray-400 md:text-lg lg:text-xl dark:text-gray-400">
             Adopt, care, and connect with pet lovers worldwide. Your furry friend is waiting for you!
           </p>

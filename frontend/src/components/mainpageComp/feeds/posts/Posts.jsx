@@ -18,7 +18,7 @@ const Posts = () => {
     <div>
       {
         posts
-          ?.filter((post) => post.pet !== null)
+          ?.filter((post) => post?.pet !== null)
           .map((post, index) => <Post key={index} post={post} />)
       }
 

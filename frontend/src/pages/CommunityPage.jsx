@@ -1,6 +1,7 @@
 import CreateCommunity from '@/components/communityComp/CreateCommunity'
 import useGetAllCommunity from '@/components/hooks/useGetAllCommunity'
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { setAllComm } from '@/redux/community/communitySlice'
 import { setAuthUser } from '@/redux/user/authSlice'
 import axios from 'axios'
@@ -9,20 +10,49 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link, Outlet, useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
-
+import { PiDotsThreeBold } from "react-icons/pi";
 
 const CommunityPage = () => {
 
   const [open, setOpen] = useState(false)
 
- 
-  useGetAllCommunity();
+  const navigate = useNavigate();
+    useGetAllCommunity();
+
+  
 
   const { allCommunities } = useSelector(store => store.community);
   const { user } = useSelector(store => store.auth);
-  console.log(user);
-  const navigate = useNavigate()
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
+
+  const deleteCommunity = async(communityId) =>{
+    try{
+
+      const res = await axios.delete(`community/delete/${communityId}`,{withCredentials:true});
+
+      if(res.data.success){
+
+        toast.success("Community deleted successfully");
+
+        const updatedAllComm = allCommunities.filter(comm => comm._id !== communityId);
+        dispatch(setAllComm(updatedAllComm));
+  
+        const authCommUpdate = {
+          ...user,
+          joinedCommunities: user.joinedCommunities.filter(id => id !== communityId),
+        };
+        dispatch(setAuthUser(authCommUpdate));
+
+        dispatch(setCommDetail(null));
+
+        navigate('/main/community');
+      }
+
+    }catch(err){
+      console.log(err);
+      
+    }
+  }
 
   const joinedCommunityHandler= async(communityId)=>{
     try{ 
@@ -37,7 +67,7 @@ const CommunityPage = () => {
         dispatch(
           setAuthUser({
             ...user,
-            joinedCommunities: [...user.joinedCommunities, communityId], // Add new community
+            joinedCommunities: [...user.joinedCommunities, communityId], 
           })
         )
       }
@@ -50,6 +80,8 @@ const CommunityPage = () => {
     }
   }
 
+
+  
   return (
     <>
       <div className='flex m-5 p-5 justify-center items-center w-full '>
@@ -119,6 +151,14 @@ const CommunityPage = () => {
                                 <span>{community?.posts.length} posts</span>
                               </div>
                             </div>
+                            <DropdownMenu>
+                              <DropdownMenuTrigger><PiDotsThreeBold /></DropdownMenuTrigger>
+                              <DropdownMenuContent>
+                                <DropdownMenuLabel>My Community </DropdownMenuLabel>
+                                <DropdownMenuSeparator/>
+                                <DropdownMenuItem onClick={(e)=>{e.stopPropagation();}}> <button onClick={()=>{deleteCommunity(community?._id)}} className='cursor-pointer text-rose-600'>delete community </button> </DropdownMenuItem>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
                           </div>
 
                           </Link>

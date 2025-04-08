@@ -6,6 +6,8 @@ import React, { useState } from 'react'
 import { FaHeart, FaRegHeart } from 'react-icons/fa';
 import { useDispatch, useSelector } from 'react-redux';
 import CommentDialog from './CommentDialog';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { PiDotsThreeBold } from 'react-icons/pi';
 
 const CommunityPosts = ({ post }) => {
 
@@ -75,37 +77,42 @@ const CommunityPosts = ({ post }) => {
                 dispatch(setAllCommPost(updatedPostData));
                 setText("")
                 toast.success("comment added");
-               
+
             }
         } catch (err) {
             console.log(err);
 
         }
     }
+
+   
     return (
         <div>
             <div className='my-8 w-full max-w-sm md:max-w-lg mx-auto'>
-                <div className='flex gap-4 my-2 '>
-                    <div className="relative w-12 h-12 ">
-                        {/* Community Image (background avatar) */}
-                        <img
-                            src={post?.community.poster}
-                            alt="Community"
-                            className="w-full h-full rounded object-cover"
-                        />
+                <div className='flex justify-between my-2 '>
+                    <div className='flex gap-4 my-2 '>
+                        <div className="relative w-12 h-12 ">
+                            {/* Community Image (background avatar) */}
+                            <img
+                                src={post?.community.poster}
+                                alt="Community"
+                                className="w-full h-full rounded object-cover"
+                            />
 
-                        {/* User Image (overlapping avatar) */}
-                        <img
-                            src={post?.postedBy.profilePic}
-                            alt="User"
-                            className="w-10 h-10 rounded-full absolute top-2/5 left-1/3 border-2 border-white object-cover"
-                        />
+                            {/* User Image (overlapping avatar) */}
+                            <img
+                                src={post?.postedBy.profilePic}
+                                alt="User"
+                                className="w-10 h-10 rounded-full absolute top-2/5 left-1/3 border-2 border-white object-cover"
+                            />
+                        </div>
+                        <div>
+                            <p className='flex flex-col justify-center'>
+                                <span className='font-bold text-xl'>{post?.community?.name}</span>
+                                <span className='text-gray-800  '> posted by {post?.postedBy?.username} </span></p>
+                        </div>
                     </div>
-                    <div>
-                        <p className='flex flex-col justify-center'>
-                            <span className='font-bold text-xl'>{post?.community?.name}</span>
-                            <span className='text-gray-800  '> posted by {post?.postedBy?.username} </span></p>
-                    </div>
+                    
                 </div>
                 <div>
                     <img src={post?.media} alt='post_image'

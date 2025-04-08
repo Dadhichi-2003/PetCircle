@@ -31,7 +31,8 @@ const CommunityProfile = () => {
 
   
   const [open ,setOpen] = useState(false)
-  const { communityDetail } = useSelector(store => store.community);
+  const { communityDetail ,allCommunities } = useSelector(store => store.community);
+
   const { user } = useSelector(store => store.auth);
   const {getsingleCommPost} = useSelector(store=>store.community)
   const dispatch = useDispatch()
@@ -47,7 +48,48 @@ const CommunityProfile = () => {
     }
   }
 
+  const leaveCommunity = async()=>{
 
+    try{
+
+      const res = await axios.post(`community/leave/${communityId}`,user._id,{withCredentials:true});
+
+      if(res.data.success){
+        const updatedAllComm = allCommunities.map(comm => {
+          if (comm._id === communityId) {
+            return {
+              ...comm,
+              members: comm.members.filter(id => id !== user?._id)
+            };
+          }         
+          return comm;
+        });
+
+        const updatedCommDetail = {
+          ...communityDetail,
+          members: communityDetail.members.filter(id => id !== user?._id)
+        };
+        
+        const authCommUpdate = {
+          ...user,
+          joinedCommunities : user.joinedCommunities.filter(id => id != communityId)
+        }
+
+        dispatch(setAllComm(updatedAllComm));
+        dispatch(setCommDetail(updatedCommDetail));
+        dispatch(setAuthUser(authCommUpdate));
+        
+        toast.success('Left community succesfull');
+        setCount(count+1);
+      }
+
+    }catch(err){
+      console.log(err);
+      toast.error('Asuvidha ke liye khed he !!!')
+      
+    }
+
+  }
 
 
   const getCommunityPosts= async()=>{
@@ -180,7 +222,7 @@ const CommunityProfile = () => {
                 {
                  isMember && <button
 
-                    className={`flex items-center w-50 cursor-pointer justify-center gap-3 px-4 py-2 rounded-md font-medium bg-violet-500 text-gray-200 transition-colors`}
+                  onClick={()=>{leaveCommunity()}}  className={`flex items-center w-50 cursor-pointer justify-center gap-3 px-4 py-2 rounded-md font-medium bg-violet-500 text-gray-200 transition-colors`}
                   >
                     Joined <SiTicktick className='text-gray-200 size-5' />
                   </button>
@@ -250,43 +292,50 @@ const CommunityProfile = () => {
             {activeTab === "posts" && (
               <div className="space-y-6 md:w-200 w-full">
                 {/* Create Post */}
-                <div className="bg-white rounded-lg shadow-md p-4">
+                
 
+                {
 
+                  isMember &&  
+                  
+                  <div className="bg-white rounded-lg shadow-md p-4">
                   <Dialog >
-                    <DialogTrigger asChild>
-                      <div onClick={()=>{setOpen(true)}}>
-                        <div className="flex">
-                          <img
-                            src={user?.profilePic}
-                            alt="UP"
-                            className="w-10 h-10 rounded-full mr-3"
-                          />
-                          <input
-                            type="text"
-                            placeholder="Share something with the community..."
-                            className="flex-1 border border-gray-200 rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
-                          />
-                        </div>
-                        <div className="flex  mt-3 border-t pt-3">
-                          <button className="flex items-center text-gray-500 hover:bg-gray-100 px-3 py-1 rounded-md">
-                            <Image size={18} className="mr-2" />
-                            {/* //isme send button ayega or text ilkhte hi send aa ayega or user foto selecet kreg to file selection ayega preview kw sath */}
-                            <span>Photo</span>
-                          </button>
-
-                        </div>
+                  <DialogTrigger asChild>
+                    <div onClick={()=>{setOpen(true)}}>
+                      <div className="flex">
+                        <img
+                          src={user?.profilePic}
+                          alt="UP"
+                          className="w-10 h-10 rounded-full mr-3"
+                        />
+                        <input
+                          type="text"
+                          placeholder="Share something with the community..."
+                          className="flex-1 border border-gray-200 rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                        />
                       </div>
-                    </DialogTrigger>
-                  {open &&  <DialogContent >
-                      <CommunityPost open={open} setOpen={setOpen} />
-                    </DialogContent>}
-                    
-                  </Dialog>
+                      <div className="flex  mt-3 border-t pt-3">
+                        <button className="flex items-center text-gray-500 hover:bg-gray-100 px-3 py-1 rounded-md">
+                          <Image size={18} className="mr-2" />
+                          {/* //isme send button ayega or text ilkhte hi send aa ayega or user foto selecet kreg to file selection ayega preview kw sath */}
+                          <span>Photo</span>
+                        </button>
+
+                      </div>
+                    </div>
+                  </DialogTrigger>
+                {open &&  <DialogContent >
+                    <CommunityPost  open={open} setOpen={setOpen} />
+                  </DialogContent>}
+                  
+                </Dialog>
+                  </div>
+                }
+                 
 
 
 
-                </div>
+                
 
                 {/* Posts */}
 

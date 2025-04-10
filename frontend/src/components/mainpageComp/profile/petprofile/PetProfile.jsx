@@ -12,6 +12,10 @@ import CreatePost from "./CreatePost"
 import { setpetPost } from "@/redux/post/postSlice"
 import EditPetProfile from "./EditPetProfile"
 import useGetPetPost from "@/components/hooks/useGetPetPost"
+import { Switch } from "@/components/ui/switch"
+import { toast } from "sonner"
+import { Label } from "@/components/ui/label"
+
 
 const PetProfile = () => {
  
@@ -24,8 +28,29 @@ const PetProfile = () => {
   console.log(petPost);
 
   useGetPetPost()
-  
 
+  const [adoptionStatus, setAdoptionStatus] = useState(pet?.adoptionStatus);
+  const [loading, setLoading] = useState(false);
+
+  
+  const handleStatusChange = async (checked) => {
+    setAdoptionStatus(checked);
+    setLoading(true);
+
+    try {
+      const res = await axios.post("/Adoption/update-adoption", {
+        petId: pet._id,
+        adoptionStatus: checked},
+        {withCredentials:true}
+      );
+      toast.success(res.data.message)
+      console.log(res.data.message);
+    } catch (err) {
+      console.error("Error updating status:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
 
   function ProfileDetail({ label, value }) {
@@ -122,16 +147,11 @@ const PetProfile = () => {
                     </div>
                   </div>
                 </div>
+                <div className="flex flex-col items-end gap-4">
+
                 <Dialog>
-                  <DialogTrigger asChild>
-                    <MoreHorizontal onClick={() => { setOpen(true) }} className="cursor-pointer text-gray-600 hover:text-red-500 transition-colors" />
-                  </DialogTrigger>
-
-                  {open && <DialogContent className="flex flex-col items-center text-sm text-center ">
-
-                    <Dialog>
                       <DialogTrigger asChild>
-                        <button onClick={() => { setOpen(true) }} className="text-gray-900 text-lg  hover:cursor-pointer w-80 hover:border-b-2 border-gray-500">
+                        <button onClick={() => { setOpen(true) }} className=" bg-gray-700 text-white text-sm p-2 rounded-lg hover:bg-gray-600">
                           Edit Profile
                         </button>
                       </DialogTrigger>
@@ -140,10 +160,9 @@ const PetProfile = () => {
                       </DialogContent>}
 
                     </Dialog>
-
                     <Dialog >
                       <DialogTrigger asChild>
-                        <button onClick={() => setOpen(true)} className="text-gray-900 text-lg  hover:cursor-pointer w-80 hover:border-b-2 border-gray-500"> Add Post  </button>
+                        <button onClick={() => setOpen(true)} className=" bg-gray-700 text-white text-sm p-2 rounded-lg hover:bg-gray-600"> Add Post  </button>
                       </DialogTrigger>
 
                       {open &&
@@ -154,12 +173,22 @@ const PetProfile = () => {
 
 
                     </Dialog>
+                   
+                   
 
-                  </DialogContent>}
-
-                </Dialog>
+                </div>
+               
 
               </div>
+              <div className="flex gap-2">
+                    <Label id={`switch-${pet?._id}`} >  want to set your pet for adoption?</Label>
+                    <Switch  
+                      id={`switch-${pet?._id}`}
+                      checked={adoptionStatus}
+                      onCheckedChange={handleStatusChange}
+                      disabled={loading}
+                      />
+                    </div>
             </CardContent>
           </Card>
           <div className="mb-8">

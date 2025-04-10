@@ -4,75 +4,167 @@ import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { PawPrint, Clock, CheckCircle, XCircle } from "lucide-react"
+import axios from "axios"
+import { useDispatch, useSelector } from "react-redux"
+import { useEffect } from "react"
+import { setAdoptionPet, setAllAdoptionReq, setAllSendingAdoptionReq } from '../redux/adoption/adoptionSlice'
+import { toast } from "sonner"
+import PetCard from "@/components/adoptionComp/PetCard"
+import MyAdoptionReq from "@/components/adoptionComp/MyAdoptionReq"
+
 
 export default function AdoptionsPage() {
+
+  const dispatch = useDispatch();
+  const { AdoptionPets, AllAdoptionReq, AllSendingReq } = useSelector(store => store.adoption);
+  const { user } = useSelector(store => store.auth);
+
+
+  const getAllAvailablePets = async () => {
+    try {
+
+      const res = await axios.get('/Adoption/by-adoption-status?adoptionStatus=true', { withCredentials: true });
+      if (res.data) {
+        dispatch(setAdoptionPet(res.data.pets));
+      }
+
+    } catch (err) {
+      console.log(err);
+
+    }
+  }
+
+ 
+
+  const getAllAdoptionrequest = async () => {
+    try {
+
+      const res = await axios.get(`Adoption/requests-by-my-pets/${user._id}`, { withCredentials: true });
+      if (res.data) {
+        dispatch(setAllAdoptionReq(res.data.requestsByPet))
+        console.log(res.data.requestsByPet);
+
+      }
+
+    } catch (err) {
+      console.log(err);
+
+    }
+  }
+
+  const handleAdoptionRequest = async (adoptionReqId, status) => {
+    try {
+
+      const res = await axios.post('Adoption/update-status', { adoptionReqId, status }, { withCredentials: true });
+      if (res.data) {
+        toast.success(`Request ${status.toLowerCase()} successfully`);
+
+        const updatedRequests = AllAdoptionReq.map((req) =>
+          req._id === adoptionReqId ? { ...req, status } : req
+        );
+
+        
+
+        dispatch(setAllAdoptionReq(updatedRequests));
+        dispatch(setAllSendingAdoptionReq(updatedRequests));
+      }
+
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  const groupedRequests = AllAdoptionReq.reduce((acc, req) => {
+    const petId = req.petId._id;
+
+    // Only add pet once
+    if (!acc[petId]) {
+      acc[petId] = { pet: req.petId, requests: [] };
+    }
+
+    // Prevent adding the same request twice
+    const alreadyExists = acc[petId].requests.find(r => r._id === req._id);
+    if (!alreadyExists) {
+      acc[petId].requests.push(req);
+    }
+
+    return acc;
+  }, {});
+
+  useEffect(() => {
+    getAllAvailablePets();
+    getAllAdoptionrequest();
+ 
+  }, [])
   return (
     <div className="flex justify-center items-center w-200">
 
-    <div className="container mx-auto py-8">
-      <h1 className="text-3xl font-bold mb-8">Pet Adoptions</h1>
+      <div className="container mx-auto py-8">
+        <h1 className="text-3xl font-bold mb-8">Pet Adoptions</h1>
 
-      <Tabs defaultValue="available">
-        <TabsList className="mb-6">
-          <TabsTrigger value="available">Available Pets</TabsTrigger>
-          <TabsTrigger value="requests">My Adoption Requests</TabsTrigger>
-          <TabsTrigger value="mypets">My Pets</TabsTrigger>
-        </TabsList>
+        <Tabs defaultValue="available">
+          <TabsList className="mb-6">
+            <TabsTrigger value="available">Available Pets</TabsTrigger>
+            <TabsTrigger value="requests">My Adoption Requests</TabsTrigger>
+            <TabsTrigger value="mypets">My Pets</TabsTrigger>
+          </TabsList>
 
-        <TabsContent value="available" className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {availablePets.map((pet) => (
-              <PetCard key={pet.id} pet={pet} />
-            ))}
-          </div>
-        </TabsContent>
+          <TabsContent value="available" className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {AdoptionPets?.map((pet) => (
+                <>
+                  
+                  {!(user._id === pet.owner) && <PetCard key={pet._id} pet={pet}  />}
 
-        <TabsContent value="requests" className="space-y-6">
-          <div className="grid grid-cols-1 gap-6">
-            {myAdoptionRequests.map((request) => (
-              <AdoptionRequestCard key={request.id} request={request} isAdopter={true} />
-            ))}
-          </div>
-        </TabsContent>
+                </>
+              ))}
+            </div>
+          </TabsContent>
 
-        <TabsContent value="mypets" className="space-y-6">
-          <div className="grid grid-cols-1 gap-6">
-            {myPetsWithRequests.map((item) => (
-              <div key={item.pet.id} className="space-y-4">
-                <PetCard pet={item.pet} isOwner={true} />
+          <TabsContent value="requests" className="space-y-6">
+            <div className="grid grid-cols-1 gap-6">
+              
+                <MyAdoptionReq  />
+              
+            </div>
+          </TabsContent>
 
-                {item.requests.length > 0 && (
+          <TabsContent value="mypets" className="space-y-6">
+            {Object.values(groupedRequests).map(({ pet, requests }) => (
+              <div key={pet._id} className="space-y-4">
+                <Petcard pet={pet} isOwner={true} />
+                {requests.length > 0 && (
                   <div className="ml-6 space-y-4">
                     <h3 className="text-lg font-medium">Adoption Requests</h3>
-                    {item.requests.map((request) => (
-                      <AdoptionRequestCard key={request.id} request={request} isOwner={true} />
+                    {requests.map((request) => (
+                      <AdoptionRequestCard
+                        key={request._id}
+                        request={request}
+                        isOwner={true}
+                        handleAdoptionRequest={handleAdoptionRequest}
+                      />
                     ))}
                   </div>
                 )}
               </div>
             ))}
-          </div>
-        </TabsContent>
-      </Tabs>
-    </div>
+
+          </TabsContent>
+        </Tabs>
+      </div>
     </div>
   )
 }
 
-function PetCard({ pet, isOwner = false }) {
+function Petcard({ pet, isOwner = false, requestAdoption ,value }) {
   return (
     <Card className="overflow-hidden">
-      <div className="aspect-square relative">
+      <div className=" relative">
         <img
-          src={pet.profilePic || "/placeholder.svg?height=300&width=300"}
-          alt={pet.petname}
-          className="object-cover w-full h-full"
+          src={pet?.profilePic}
+          alt={pet?.petname}
+          className={`object-cover w-full md:h-69 h-full `}
         />
-        {pet.adoptionStatus && (
-          <div className="absolute top-2 right-2">
-            <Badge variant="destructive">Adoption Pending</Badge>
-          </div>
-        )}
       </div>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
@@ -98,13 +190,9 @@ function PetCard({ pet, isOwner = false }) {
         </div>
       </CardContent>
       <CardFooter>
-        {!isOwner && (
-          <Button variant='secondary' className="w-full" disabled={pet.adoptionStatus}>
-            {pet.adoptionStatus ? "Adoption In Progress" : "Request Adoption"}
-          </Button>
-        )}
+        
         {isOwner && (
-          <Button variant="outline" className="w-full">
+          <Button variant="outline" className="w-full"> {/* ani uper navigate krin pet profile pr moklvanu 6 */ }
             Edit Pet Details
           </Button>
         )}
@@ -113,24 +201,24 @@ function PetCard({ pet, isOwner = false }) {
   )
 }
 
-function AdoptionRequestCard({ request, isOwner = false, isAdopter = false }) {
+function AdoptionRequestCard({ request, isOwner = false, handleAdoptionRequest }) {
   const getStatusBadge = (status) => {
     switch (status) {
       case "Pending":
         return (
-          <Badge variant="outline" className="flex items-center gap-1">
+          <Badge variant="outline" className="flex items-center gap-1 bg-blue-500">
             <Clock className="h-3 w-3" /> Pending
           </Badge>
         )
       case "Approved":
         return (
-          <Badge variant="success" className="flex items-center gap-1">
+          <Badge variant="success" className="flex items-center gap-1 bg-violet-500">
             <CheckCircle className="h-3 w-3" /> Approved
           </Badge>
         )
       case "Rejected":
         return (
-          <Badge variant="destructive" className="flex items-center gap-1">
+          <Badge variant="outline" className="flex items-center gap-1 bg-red-400">
             <XCircle className="h-3 w-3" /> Rejected
           </Badge>
         )
@@ -141,206 +229,47 @@ function AdoptionRequestCard({ request, isOwner = false, isAdopter = false }) {
 
   return (
     <>
-    
-    <Card >
-      <CardHeader className="pb-2">
-        <div className="flex justify-between items-start">
-          <div>
-            <CardTitle>{request.pet.petname}</CardTitle>
-            <CardDescription>
-              {request.pet.breed} {request.pet.species}, {request.pet.age} years old
-            </CardDescription>
+
+      <Card >
+        <CardHeader className="pb-2">
+          <div className="flex justify-between items-start">
+            <div>
+              <CardTitle>{request?.petId.petname}</CardTitle>
+              <CardDescription>
+                {request.petId.breed} {request.petId.species}, {request.petId.age} years old
+              </CardDescription>
+            </div>
+            {getStatusBadge(request.status)}
           </div>
-          {getStatusBadge(request.status)}
-        </div>
-      </CardHeader>
-      <CardContent>
-        <div className="flex items-center gap-4 mb-4">
-          <Avatar>
-            <AvatarImage src={isOwner ? request.adopter.profilePic : request.owner.profilePic} />
-            <AvatarFallback>{isOwner ? request.adopter.name.charAt(0) : request.owner.name.charAt(0)}</AvatarFallback>
-          </Avatar>
-          <div>
-            <p className="font-medium">{isOwner ? request.adopter.name : request.owner.name}</p>
-            <p className="text-sm text-muted-foreground">{isOwner ? "Potential Adopter" : "Pet Owner"}</p>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center gap-4 mb-4">
+            <Avatar>
+              <AvatarImage src={ request?.adopterId.profilePic } />
+              <AvatarFallback>{request?.adopterId.username }</AvatarFallback>
+            </Avatar>
+            <div>
+              <p className="font-medium">{request?.adopterId.username }</p>
+              <p className="text-sm text-muted-foreground">Potential Adopter</p>
+            </div>
           </div>
-        </div>
-        <p className="text-sm text-muted-foreground">
-          Request submitted on {new Date(request.createdAt).toLocaleDateString()}
-        </p>
-      </CardContent>
-      {isOwner && request.status === "Pending" && (
-        <CardFooter className="flex gap-2">
-          <Button className="flex-1" variant="default">
-            Approve
-          </Button>
-          <Button className="flex-1" variant="destructive">
-            Reject
-          </Button>
-        </CardFooter>
-      )}
-      {isAdopter && request.status === "Pending" && (
-        <CardFooter>
-          <Button variant="outline" className="w-full">
-            Cancel Request
-          </Button>
-        </CardFooter>
-      )}
-    </Card>
-    
+          <p className="text-sm text-muted-foreground">
+            Request submitted on {new Date(request.createdAt).toLocaleDateString()}
+          </p>
+        </CardContent>
+        {isOwner && request.status === "Pending" && (
+          <CardFooter className="flex gap-2">
+            <Button onClick={() => { handleAdoptionRequest(request._id, 'Approved') }} className="flex-1" variant="secondary">
+              Approve
+            </Button>
+            <Button onClick={() => { handleAdoptionRequest(request._id, 'Rejected') }} className="flex-1 bg-red-500 hover:bg-red-700" variant="secondary">
+              Reject
+            </Button>
+          </CardFooter>
+        )}
+       
+      </Card>
+
     </>
   )
 }
-
-// Sample data for demonstration
-const availablePets = [
-  {
-    id: "1",
-    petname: "Max",
-    species: "Dog",
-    breed: "Golden Retriever",
-    age: 3,
-    profilePic: "/placeholder.svg?height=300&width=300",
-    medicalHistory: ["Vaccinated", "Neutered"],
-    adoptionStatus: false,
-  },
-  {
-    id: "2",
-    petname: "Bella",
-    species: "Cat",
-    breed: "Siamese",
-    age: 2,
-    profilePic: "/placeholder.svg?height=300&width=300",
-    medicalHistory: ["Vaccinated", "Spayed", "Treated for ear mites"],
-    adoptionStatus: true,
-  },
-  {
-    id: "3",
-    petname: "Rocky",
-    species: "Dog",
-    breed: "German Shepherd",
-    age: 4,
-    profilePic: "/placeholder.svg?height=300&width=300",
-    medicalHistory: ["Vaccinated", "Neutered", "Hip dysplasia treatment"],
-    adoptionStatus: false,
-  },
-]
-
-const myAdoptionRequests = [
-  {
-    id: "1",
-    pet: {
-      id: "2",
-      petname: "Bella",
-      species: "Cat",
-      breed: "Siamese",
-      age: 2,
-    },
-    owner: {
-      id: "101",
-      name: "John Doe",
-      profilePic: "/placeholder.svg?height=50&width=50",
-    },
-    status: "Pending",
-    createdAt: "2023-04-15T10:30:00Z",
-  },
-  {
-    id: "2",
-    pet: {
-      id: "4",
-      petname: "Charlie",
-      species: "Dog",
-      breed: "Beagle",
-      age: 1,
-    },
-    owner: {
-      id: "102",
-      name: "Jane Smith",
-      profilePic: "/placeholder.svg?height=50&width=50",
-    },
-    status: "Approved",
-    createdAt: "2023-04-10T14:20:00Z",
-  },
-  {
-    id: "3",
-    pet: {
-      id: "5",
-      petname: "Luna",
-      species: "Cat",
-      breed: "Maine Coon",
-      age: 3,
-    },
-    owner: {
-      id: "103",
-      name: "Mike Johnson",
-      profilePic: "/placeholder.svg?height=50&width=50",
-    },
-    status: "Rejected",
-    createdAt: "2023-04-05T09:15:00Z",
-  },
-]
-
-const myPetsWithRequests = [
-  {
-    pet: {
-      id: "6",
-      petname: "Cooper",
-      species: "Dog",
-      breed: "Labrador",
-      age: 2,
-      profilePic: "/placeholder.svg?height=300&width=300",
-      medicalHistory: ["Vaccinated", "Neutered"],
-      adoptionStatus: true,
-    },
-    requests: [
-      {
-        id: "4",
-        pet: {
-          id: "6",
-          petname: "Cooper",
-          species: "Dog",
-          breed: "Labrador",
-          age: 2,
-        },
-        adopter: {
-          id: "201",
-          name: "Sarah Williams",
-          profilePic: "/placeholder.svg?height=50&width=50",
-        },
-        status: "Pending",
-        createdAt: "2023-04-18T11:45:00Z",
-      },
-      {
-        id: "5",
-        pet: {
-          id: "6",
-          petname: "Cooper",
-          species: "Dog",
-          breed: "Labrador",
-          age: 2,
-        },
-        adopter: {
-          id: "202",
-          name: "David Brown",
-          profilePic: "/placeholder.svg?height=50&width=50",
-        },
-        status: "Pending",
-        createdAt: "2023-04-17T16:30:00Z",
-      },
-    ],
-  },
-  {
-    pet: {
-      id: "7",
-      petname: "Milo",
-      species: "Cat",
-      breed: "Persian",
-      age: 4,
-      profilePic: "/placeholder.svg?height=300&width=300",
-      medicalHistory: ["Vaccinated", "Dental cleaning"],
-      adoptionStatus: false,
-    },
-    requests: [],
-  },
-]
-

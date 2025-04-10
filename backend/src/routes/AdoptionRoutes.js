@@ -8,6 +8,9 @@ routes.get("/by-adoption-status",isAuthenticated,AdoptionController.getPetsByAdo
 routes.post("/request-adoption",isAuthenticated,AdoptionController.requestAdoption)
 routes.get("/adoption-requests/:petId",isAuthenticated,AdoptionController.getAdoptionRequestsByPet);
 routes.post("/update-status", isAuthenticated, AdoptionController.updateAdoptionRequestStatus);
+routes.get("/my-requests/:adopterId", isAuthenticated, AdoptionController.getMyAdoptionRequests);
+routes.delete("/:adoptionId", isAuthenticated, AdoptionController.cancelAdoptionRequest);
+routes.get('/requests-by-my-pets/:ownerId',isAuthenticated,AdoptionController.getAdoptionRequestsForMyPets);
 
 
 

@@ -27,7 +27,9 @@ const addPetProfile = async (req, res) => {
           const cloudinaryResponse = await cloudinaryUtil.uploadFileToCloudinary(req.file);
           profilePicUrl = cloudinaryResponse.secure_url;
         }
-  
+        
+        const adoptionStatus = req.body.adoptionStatus === "true";
+
         // Create pet object
         const petData = {
           owner: req.body.owner,
@@ -37,7 +39,7 @@ const addPetProfile = async (req, res) => {
           age: req.body.age,
           medicalHistory: req.body.medicalHistory,
           profilePic: profilePicUrl,
-          adopted:req.body.adopted,
+          adoptionStatus:adoptionStatus,
           posts:req.body.posts
         };
   

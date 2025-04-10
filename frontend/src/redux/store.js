@@ -5,6 +5,7 @@ import socketSlice from './socket/socketSlice'
 import chatSlice from './chat/chatSlice'
 import rtnSlice from './chat/rtnSlice'
 import communitySlice from './community/communitySlice'
+import adoptionSlice from './adoption/adoptionSlice'
 
 import {
     persistReducer,
@@ -26,7 +27,8 @@ import {
     socketio:socketSlice,
     chat :chatSlice,
     realTimeNotification:rtnSlice,
-    community:communitySlice
+    community:communitySlice,
+    adoption:adoptionSlice
   })
 
   const persistConfig = {

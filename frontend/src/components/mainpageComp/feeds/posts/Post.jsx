@@ -12,6 +12,7 @@ import axios from 'axios'
 import { toast } from 'sonner'
 import { setPosts, setSelectedPost } from '@/redux/post/postSlice'
 import { Badge } from '@/components/ui/badge'
+import { Link } from 'react-router-dom'
 
 
 
@@ -111,11 +112,15 @@ const Post = ({ post }) => {
         }
     }
 
+    console.log(post);
+    
 
     return (
         <div className='my-8 w-full max-w-sm md:max-w-lg mx-auto'>
             <div className='flex items-center justify-between'>
+            <Link to={`/main/profile/${post?.pet?.owner._id}`}>
                 <div className='flex items-center gap-2 ' >
+                    
                     <Avatar>
                         <AvatarImage src={post?.pet?.profilePic} alt="post_image" />
                         <AvatarFallback>CN</AvatarFallback>
@@ -124,7 +129,9 @@ const Post = ({ post }) => {
                         <h1>{post?.pet?.petname}</h1>
                         {user?._id === post?.pet?.owner?._id &&  <Badge variant="" className="bg-gray-500 text-gray-100 hover:bg-gray-400">Author</Badge>}
                     </div>
+                   
                 </div >
+                </Link>
 
                 <Dialog>
                     <DialogTrigger asChild>

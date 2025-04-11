@@ -8,6 +8,7 @@ import axios from 'axios'
 import { setAllAdoptionReq, setAllSendingAdoptionReq } from '@/redux/adoption/adoptionSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'sonner'
+import { Link } from 'react-router-dom'
 
 const MyAdoptionReq = (  isAdopter = false ) => {
 
@@ -15,7 +16,7 @@ const MyAdoptionReq = (  isAdopter = false ) => {
     const {user} = useSelector(store=>store.auth)
     const dispatch = useDispatch()
     
-    
+      
     const getSendingAdoptionReq = async () => {
         try {
           const res = await axios.get(`Adoption/my-requests/${user?._id}`, { withCredentials: true });
@@ -94,6 +95,7 @@ const MyAdoptionReq = (  isAdopter = false ) => {
           </div>
         </CardHeader>
         <CardContent>
+          <Link to={`/main/profile/${ request?.ownerId._id}`}>
           <div className="flex items-center gap-4 mb-4">
             <Avatar>
               <AvatarImage src={ request?.ownerId.profilePic} />
@@ -104,6 +106,7 @@ const MyAdoptionReq = (  isAdopter = false ) => {
               <p className="text-sm text-muted-foreground"> "Pet Owner"</p>
             </div>
           </div>
+          </Link>
           <p className="text-sm text-muted-foreground">
             Request submitted on {new Date(request.createdAt).toLocaleDateString()}
           </p>

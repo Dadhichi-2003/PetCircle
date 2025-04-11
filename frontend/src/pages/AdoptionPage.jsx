@@ -11,6 +11,7 @@ import { setAdoptionPet, setAllAdoptionReq, setAllSendingAdoptionReq } from '../
 import { toast } from "sonner"
 import PetCard from "@/components/adoptionComp/PetCard"
 import MyAdoptionReq from "@/components/adoptionComp/MyAdoptionReq"
+import { Link } from "react-router-dom"
 
 
 export default function AdoptionsPage() {
@@ -18,7 +19,9 @@ export default function AdoptionsPage() {
   const dispatch = useDispatch();
   const { AdoptionPets, AllAdoptionReq, AllSendingReq } = useSelector(store => store.adoption);
   const { user } = useSelector(store => store.auth);
-
+  
+  console.log(AllAdoptionReq);
+  
 
   const getAllAvailablePets = async () => {
     try {
@@ -63,9 +66,7 @@ export default function AdoptionsPage() {
           req._id === adoptionReqId ? { ...req, status } : req
         );
 
-        
-
-        dispatch(setAllAdoptionReq(updatedRequests));
+        // dispatch(setAllAdoptionReq(updatedRequests));
         dispatch(setAllSendingAdoptionReq(updatedRequests));
       }
 
@@ -81,7 +82,7 @@ export default function AdoptionsPage() {
     if (!acc[petId]) {
       acc[petId] = { pet: req.petId, requests: [] };
     }
-
+  
     // Prevent adding the same request twice
     const alreadyExists = acc[petId].requests.find(r => r._id === req._id);
     if (!alreadyExists) {
@@ -140,7 +141,7 @@ export default function AdoptionsPage() {
                       <AdoptionRequestCard
                         key={request._id}
                         request={request}
-                        isOwner={true}
+                        isOwner={request?.petId?.owner}
                         handleAdoptionRequest={handleAdoptionRequest}
                       />
                     ))}
@@ -156,7 +157,7 @@ export default function AdoptionsPage() {
   )
 }
 
-function Petcard({ pet, isOwner = false, requestAdoption ,value }) {
+function Petcard({ pet, isOwner }) {
   return (
     <Card className="overflow-hidden">
       <div className=" relative">
@@ -192,16 +193,19 @@ function Petcard({ pet, isOwner = false, requestAdoption ,value }) {
       <CardFooter>
         
         {isOwner && (
+          <Link to={`/main/profile/${pet.owner}`}>
           <Button variant="outline" className="w-full"> {/* ani uper navigate krin pet profile pr moklvanu 6 */ }
             Edit Pet Details
           </Button>
+          </Link>
         )}
       </CardFooter>
     </Card>
   )
 }
 
-function AdoptionRequestCard({ request, isOwner = false, handleAdoptionRequest }) {
+function AdoptionRequestCard({ request, isOwner, handleAdoptionRequest }) {
+
   const getStatusBadge = (status) => {
     switch (status) {
       case "Pending":

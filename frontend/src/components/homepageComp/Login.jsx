@@ -17,6 +17,8 @@ const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+    
+    
   const submitHandler = async (data) => {
     try {
       const login = await axios.post("/login", data, { withCredentials: true });
@@ -25,11 +27,11 @@ const Login = () => {
         console.log(login.data)
         localStorage.setItem("id", login.data.data._id);
         dispatch(setAuthUser(login.data.data))
-        if (login.data.data.role === "User") {
+       
           setTimeout(() => {
             navigate("/main");
           }, 3000);
-        }
+        
       }
     } catch (error) {
         console.log(error);

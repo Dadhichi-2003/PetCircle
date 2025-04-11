@@ -23,17 +23,22 @@ const Feed = () => {
   // }, [posts, dispatch]); // ✅ Dependencies add ki 
 
   
+
+  
   return (
 
     <>
-    <div className='flex-1 my-8 flex flex-col items-center '>
+    <div className='flex justify-around gap-10'>
+      <div className='   '>
         <Posts/>
-    </div>
-    <div className='hidden md:flex md:flex-col  md:self-start'>
+      </div>
+      <div className=' hidden md:flex md:flex-col  md:self-start'>
       <RightSidebar/>
+      </div>
     </div>
     </>
-    
+    // my-8 flex flex-col items-center
+    //  
   )
 }
 

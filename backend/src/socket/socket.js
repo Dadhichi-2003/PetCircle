@@ -24,13 +24,14 @@ io.on('connection',(socket)=>{
         console.log(`User connected : userID = ${userId},SocketId = ${socket.id}`);
         
     }
-    io.emit('getOnlineUser',Object.keys(UserSocketMap));
+    io.emit('getOnlineUsers',Object.keys(UserSocketMap));
     console.log(UserSocketMap)
     socket.on('disconnect',()=>{
-        if(userId){
-            console.log(`User connected : userID = ${userId},SocketId = ${socket.id}`);
-        }
-        io.emit('getOnlineUser',Object.keys(UserSocketMap));
+        if (userId) {
+            console.log(`User disconnected : userID = ${userId}, SocketId = ${socket.id}`);
+            delete UserSocketMap[userId]; // ✅ This is also missing
+          }
+          io.emit('getOnlineUsers', Object.keys(UserSocketMap)); // re-broadcast after removal
     })
 })
 

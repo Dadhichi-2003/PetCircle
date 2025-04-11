@@ -24,7 +24,7 @@ import CommunityProfile from './components/communityComp/CommunityProfile'
 
 
 function App() {
-
+  const {onlineUsers,messages }= useSelector(store=>store.chat)
   const dispatch = useDispatch()
   const {user} = useSelector(store => store.auth);
   const {socket} =useSelector(store=>store.socketio)
@@ -64,8 +64,7 @@ function App() {
 
 
   axios.defaults.baseURL = 'http://localhost:3000'
- 
-
+   
 
   return (
     <>

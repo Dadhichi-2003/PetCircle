@@ -256,8 +256,9 @@ const getAdoptionRequestsForMyPets = async (req, res) => {
 
     // Step 2: Find all adoption requests for these pets
     const adoptionRequests = await Adoption.find({ petId: { $in: petIds } })
-      .populate("petId", "petname species breed age profilePic medicalHistory")
-      .populate("adopterId", "username profilePic");
+      .populate("petId", "petname species breed age profilePic medicalHistory owner")
+      .populate("adopterId", "username profilePic")
+      
 
     res.status(200).json({
       message: "Adoption requests for your pets",

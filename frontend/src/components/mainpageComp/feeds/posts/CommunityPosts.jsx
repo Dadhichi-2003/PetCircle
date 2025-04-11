@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import CommentDialog from './CommentDialog';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { PiDotsThreeBold } from 'react-icons/pi';
+import { Link } from 'react-router-dom';
 
 const CommunityPosts = ({ post }) => {
 
@@ -22,7 +23,7 @@ const CommunityPosts = ({ post }) => {
 
     const dispatch = useDispatch();
 
-
+ 
 
 
     const changeEventHandler = (e) => {
@@ -91,6 +92,7 @@ const CommunityPosts = ({ post }) => {
             <div className='my-8 w-full max-w-sm md:max-w-lg mx-auto'>
                 <div className='flex justify-between my-2 '>
                     <div className='flex gap-4 my-2 '>
+                        <Link to={`/main/community/${post?.community._id}`}>
                         <div className="relative w-12 h-12 ">
                             {/* Community Image (background avatar) */}
                             <img
@@ -106,6 +108,7 @@ const CommunityPosts = ({ post }) => {
                                 className="w-10 h-10 rounded-full absolute top-2/5 left-1/3 border-2 border-white object-cover"
                             />
                         </div>
+                        </Link>
                         <div>
                             <p className='flex flex-col justify-center'>
                                 <span className='font-bold text-xl'>{post?.community?.name}</span>

@@ -62,8 +62,7 @@ const ChatPage = () => {
     }
   }, [selectedUser, navigate]);
 
-  const isOnline = onlineUsers?.some((userId) => userId === suggestedUsers._id);
-  console.log(onlineUsers)
+
   return (
     <div className='flex h-screen md:ml-[20%]  w-full  '>
       <section className='w-[50%] md:w-1/4 my-8'>
@@ -72,7 +71,7 @@ const ChatPage = () => {
         <div className='overflow-y-auto h-[80vh]'>
           {
             suggestedUsers?.map((suggestedUser) => {
-              {isOnline ? 'online' : 'offline'}
+              const isOnline = onlineUsers?.includes(suggestedUser._id);
               return (
               
                 <div  onClick={() => handleUserClick(suggestedUser)}   className='flex gap-3 items-center p-3 hover:bg-gray-50 cursor-pointer'>

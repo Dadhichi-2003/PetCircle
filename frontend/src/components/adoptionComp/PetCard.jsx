@@ -7,6 +7,7 @@ import { toast } from 'sonner'
 import { useDispatch, useSelector } from 'react-redux'
 import axios from 'axios'
 import { setAllAdoptionReq, setAllSendingAdoptionReq } from '@/redux/adoption/adoptionSlice'
+import { Link } from 'react-router-dom'
 
 const PetCard = ({ pet, isOwner = false }) => {
 
@@ -24,7 +25,7 @@ const PetCard = ({ pet, isOwner = false }) => {
           if (res) {
             toast.success('request sent suucesfully');
             dispatch(setAllSendingAdoptionReq([...AllSendingReq, res.data.adoptionRequest]));
-            dispatch(setAllAdoptionReq([...AllAdoptionReq , res.data.adoptionRequest]))
+            // dispatch(setAllAdoptionReq([...AllAdoptionReq , res.data.adoptionRequest]))
             console.log(res.data);
     
           }
@@ -40,6 +41,7 @@ const PetCard = ({ pet, isOwner = false }) => {
   return (
     <div>
       <Card className="overflow-hidden">
+      <Link to={`/main/profile/${pet?.owner}`}>
       <div className="aspect-square relative">
         <img
           src={pet?.profilePic}
@@ -52,6 +54,7 @@ const PetCard = ({ pet, isOwner = false }) => {
           </div>
         )}
       </div>
+      </Link>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           {pet.petname}

@@ -127,7 +127,7 @@ const CommunityPostCard = ({ post }) => {
         <div key={post._id} className="bg-white rounded-lg shadow-md overflow-hidden ">
             {/* Post Header */}
             <div className="flex items-center justify-between p-4">
-                <Link to={`/profile/${post?.postedBy._id}`} className="flex items-center">
+                <Link to={`/main/profile/${post?.postedBy._id}`} className="flex items-center">
                     <img
                         src={post?.postedBy.profilePic}
                         alt={post?.postedBy.username}

@@ -23,7 +23,7 @@ const PetProfile = () => {
   const [open, setOpen] = useState(false)
   const dispatch = useDispatch()
   const id = useParams().id
-  const { pet } = useSelector((store) => store.auth);
+  const { pet ,user } = useSelector((store) => store.auth);
   const { petPost } = useSelector(store => store.post);
   console.log(petPost);
 
@@ -122,11 +122,11 @@ const PetProfile = () => {
           {/* Profile Card */}
           <Card className="mb-8 overflow-hidden  bg-gray-100 dark:bg-slate-800">
             <CardContent >
-              <div className="flex justify-between p-5 bg-gray-100 dark:bg-slate-800">
+              <div className="flex md:flex-row flex-col justify-between p-5 bg-gray-100 dark:bg-slate-800">
 
                
                 <div className="flex flex-col items-center md:gap-20 md:flex-row ">
-                  <Avatar className=" w-60 h-60 rounded-lg  border-white shadow-lg">
+                  <Avatar className=" w-80 h-60 aspect-square rounded-lg  border-white shadow-lg">
                     <AvatarImage
                       src={pet?.profilePic}
                       alt="profilepic"
@@ -147,11 +147,11 @@ const PetProfile = () => {
                     </div>
                   </div>
                 </div>
-                <div className="flex flex-col items-end gap-4">
+                <div className="flex flex-col items-end  gap-4">
 
                 <Dialog>
                       <DialogTrigger asChild>
-                        <button onClick={() => { setOpen(true) }} className=" bg-gray-700 text-white text-sm p-2 rounded-lg hover:bg-gray-600">
+                        <button onClick={() => { setOpen(true) }} className=" bg-gray-700 w-full text-white text-sm p-2 rounded-lg hover:bg-gray-600">
                           Edit Profile
                         </button>
                       </DialogTrigger>
@@ -162,7 +162,7 @@ const PetProfile = () => {
                     </Dialog>
                     <Dialog >
                       <DialogTrigger asChild>
-                        <button onClick={() => setOpen(true)} className=" bg-gray-700 text-white text-sm p-2 rounded-lg hover:bg-gray-600"> Add Post  </button>
+                        <button onClick={() => setOpen(true)} className=" bg-gray-700 w-full text-white text-sm p-2 rounded-lg hover:bg-gray-600"> Add Post  </button>
                       </DialogTrigger>
 
                       {open &&
@@ -180,15 +180,19 @@ const PetProfile = () => {
                
 
               </div>
-              <div className="flex gap-2">
-                    <Label id={`switch-${pet?._id}`} >  want to set your pet for adoption?</Label>
-                    <Switch  
-                      id={`switch-${pet?._id}`}
-                      checked={adoptionStatus}
-                      onCheckedChange={handleStatusChange}
-                      disabled={loading}
-                      />
-                    </div>
+
+              { 
+                pet?.owner._id === user._id &&   <div className="flex gap-2 justify-center md:justify-start my-3">
+                <Label id={`switch-${pet?._id}`} >  want to set your pet for adoption?</Label>
+                <Switch  
+                  id={`switch-${pet?._id}`}
+                  checked={adoptionStatus}
+                  onCheckedChange={handleStatusChange}
+                  disabled={loading}
+                  />
+                </div>
+              }
+             
             </CardContent>
           </Card>
           <div className="mb-8">

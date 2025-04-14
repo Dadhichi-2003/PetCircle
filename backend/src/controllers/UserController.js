@@ -5,7 +5,8 @@ const multer = require("multer");
 const jwt = require("jsonwebtoken");
 
 const cloudinaryUtil = require("../utils/CloudinaryUtil");
-const UserModel = require("../models/UserModel");
+const PostModel = require("../models/PostModel");
+
 
 const dotenv = require("dotenv")
 dotenv.config({});
@@ -21,10 +22,10 @@ const storage = multer.diskStorage({
 });
 
 //multer object
-const upload = multer({
-  storage: storage,
-  //file filter:pmg/jpg tec
-}).single("profilePic");
+const upload = multer({ storage: storage }).fields([
+  { name: "profilePic", maxCount: 1 },
+  { name: "media", maxCount: 1 },
+]);
 
 const upadateProfileOfOwner = async (req, res) => {
   upload(req, res, async (err) => {
@@ -35,7 +36,7 @@ const upadateProfileOfOwner = async (req, res) => {
     try {
       // ✅ Check existing profile before modifying
       const userId = req.params.id;
-      const profile = await UserModel.findById(userId).populate("pets");
+      const profile = await userModel.findById(userId);
 
       if (!profile) {
         return res.status(404).json({ message: "Profile not found" });
@@ -219,7 +220,7 @@ const logout = async (req, res) => {
 
 const getProfileById = async (req, res) => {
   try {
-    const user = await userModel.findById(req.params.id).populate("pets");
+    const user = await userModel.findById(req.params.id).populate("pets").populate('posts');
  
     res.status(200).json({
       message: "user fetched...",
@@ -388,6 +389,91 @@ const getAllExperts = async (req, res) => {
   }
 };
 
+const addExpertPost = async (req, res) => {
+  upload(req, res, async (err) => {
+    if (err) {
+      return res.status(500).json({ message: "File upload failed", error: err.message });
+    }
+
+    try {
+      const expertId = req.id; // middleware se aaraha
+      const expert = await userModel.findById(expertId);
+
+      if (!expert || expert.role !== "Expert") {
+        return res.status(403).json({ message: "Only experts can create posts" });
+      }
+
+      let mediaUrl = "";
+
+      if (req.files && req.files.media && req.files.media.length > 0) {
+        const file = req.files.media[0];
+        const cloudinaryResponse = await cloudinaryUtil.uploadFileToCloudinary(file);
+        mediaUrl = cloudinaryResponse.secure_url;
+      }
+
+      const { caption } = req.body;
+
+      const newPost = await PostModel.create({
+        caption,
+        media: mediaUrl,
+        postedBy: expertId,
+      
+      });
+
+
+       // Push the new post into the expert's 'posts' array
+       expert.posts.push(newPost._id);
+       await expert.save();
+ 
+
+      return res.status(201).json({
+        message: "Post created successfully",
+        post: newPost,
+      });
+
+    } catch (error) {
+      return res.status(500).json({
+        message: "Something went wrong",
+        error: error.message,
+      });
+    }
+  });
+};
+
+const getAllExpertPosts = async (req, res) => {
+  try {
+    // Find all users who are experts
+  
+    const experts = await userModel
+  .find({ role: "Expert" })
+  .populate({
+    path: "posts", // populate posts
+    populate: {
+      path: "postedBy", // populate postedBy inside each post
+      select: "username profilePic", // select only username and profilePic
+    },
+  })
+
+    if (!experts || experts.length === 0) {
+      return res.status(404).json({ message: "No experts found or no posts by experts" });
+    }
+
+    // Gather all posts from all experts
+    const allExpertPosts = experts.flatMap(expert => expert.posts);
+
+    return res.status(200).json({
+      message: "All expert posts fetched successfully",
+      posts: allExpertPosts,
+    });
+  } catch (err) {
+    return res.status(500).json({
+      message: "Something went wrong",
+      error: err.message,
+    });
+  }
+};
+
+
 
 
 module.exports = {
@@ -402,6 +488,8 @@ module.exports = {
   upadateProfileOfOwner,
   forgotPassword,
   resetpassword,
+  addExpertPost,
+  getAllExpertPosts
  
   // addProfileWithFile,
 };

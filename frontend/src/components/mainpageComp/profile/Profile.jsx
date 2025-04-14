@@ -18,6 +18,7 @@ import { AvatarImage } from "@radix-ui/react-avatar";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import ProfileDialog from "./petprofile/ProfileDialog";
+import CreateExpertPost from "@/components/expertComp/CreateExpertPost";
 
 
 
@@ -108,12 +109,15 @@ const Profile = () => {
   };
 
   const isFollowing = user.following.includes(userId)
-  const role = localStorage.getItem('role')
-  if (role === 'Expert') {
+  const role = localStorage.getItem('role');
+
+  const isExpert = userProfile?.role === 'Expert'
+
+  if (isExpert) {
     return <>
 
-      <div className="w-full max-w-4xl mx-auto mt-16 bg-white rounded-lg shadow-md p-6">
-        <div className="container mx-auto py-6">
+      <div className="w-full max-w-4xl mx-auto mt-16 bg-white rounded-lg shadow-md ">
+        <div className="">
           <div className="grid ">
             <div className="lg:col-span-1">
               <Card>
@@ -128,6 +132,7 @@ const Profile = () => {
                       <AvatarFallback>{userProfile.username.substring(0, 2).toUpperCase()}</AvatarFallback>
                     </Avatar>
                   </div>
+
                   <CardTitle className="text-2xl">{userProfile.username}</CardTitle>
                   <CardDescription className="text-lg font-medium">{userProfile.expertise}</CardDescription>
 
@@ -138,10 +143,10 @@ const Profile = () => {
                 </CardHeader>
 
                 <CardContent >
-                  <div className="flex justify-between w-full text-center py-4">
+                  <div className="flex justify-between w-full gap-3 text-center py-3">
 
-                    <Button variant='secondary' className='w-[50%] mx-3 '>Follow</Button>
-                    <Button variant='outline' className='w-[50%]'>Message</Button>
+                    <Button variant='secondary' className='w-[49%]  '>Follow</Button>
+                    <Button variant='outline' className='w-[49%] '>Message</Button>
 
                   </div>
 
@@ -158,7 +163,7 @@ const Profile = () => {
                     </div>
                     <Separator orientation="vertical" className="h-12 border-gray-700" />
                     <div>
-                      {/* <p className="font-bold">{userProfile.post.length}</p> */}
+                      <p className="font-bold">{userProfile.posts?.length}</p>
                       <p className="text-sm text-muted-foreground">Posts</p>
                     </div>
                   </div>
@@ -204,12 +209,35 @@ const Profile = () => {
 
                   <div>
                     <h3 className="font-medium mb-2">Services</h3>
-                    <div className="flex flex-wrap gap-2">
-                      {userProfile?.services.map((service) => {
-                        return <>
-                          <Badge variant='outline'>{service}</Badge>
-                        </>
-                      })}
+                    <div className="flex justify-between items-center">
+                      <div className="flex flex-wrap gap-2 my-3">
+                        {userProfile?.services.map((service) => {
+                          return <>
+                            <Badge variant='outline'>{service}</Badge>
+                          </>
+                        })}
+
+
+                      </div>
+                      {user?._id === userProfile?._id && <div className="">
+                      
+                      <Dialog>
+                      <DialogTrigger asChild>
+                        <Button onClick={() => setEditProfileOpen(true)} variant='secondary' className="p-2 rounded cursor-pointer text-white my-5">Edit Profile</Button>
+                      </DialogTrigger>
+                      {
+                        editProfileOpen &&
+                        <DialogContent className="w-fit">
+                          <EditUserProfile open={editProfileOpen} setopen={setEditProfileOpen} />
+
+                        </DialogContent>
+                      }
+
+                    </Dialog>
+
+                        
+                      </div>}
+                      
                     </div>
                   </div>
 
@@ -217,12 +245,8 @@ const Profile = () => {
 
 
 
-                  <div className="mt-6">
-                    {/* <Button className="w-full">
-                  <Calendar className="h-4 w-4 mr-2" />
-                  Book a Session
-                </Button> */}
-                  </div>
+
+
                 </CardContent>
               </Card>
 
@@ -234,23 +258,43 @@ const Profile = () => {
 
         </div>
 
-        <div className="mb-8">
+        <div className="my-8">
           <div className="flex justify-between">
-            <h2 className="text-3xl font-bold mb-6">POSTS</h2>
-            <Button variant='secondary'>ADD POST</Button>
+            <h2 className="text-3xl font-bold mb-6 ml-5">POSTS</h2>
+            {
+              user?._id === userProfile?._id && 
+              <Dialog >
+                      <DialogTrigger asChild>
+                        <Button onClick={() => setopen(true)} variant='secondary' className=" mr-5"> Add Post  </Button>
+                      </DialogTrigger>
+
+                      {open &&
+
+                        <DialogContent >
+                          <CreateExpertPost open={open} setOpen={setopen} />
+                        </DialogContent>
+                        
+                        }
+
+
+                    </Dialog>
+            }       
+            
+                   
+           
           </div>
 
 
-          <div className=" relative grid grid-cols-2 gap-1 md:grid-cols-3 md:gap-4">
+          <div className=" relative grid grid-cols-2 gap-1 md:grid-cols-3 md:gap-4 p-5">
             {
-              [1, 2, 3]?.map(post => {
+              userProfile.posts?.map(post => {
                 return <>
                   <Dialog>
                     <DialogTrigger>
                       <div className="aspect-square overflow-hidden rounded-sm">
                         <img
 
-                          src={ "/placeholder.svg"}
+                          src={post.media}
                           alt={'alt'}
                           className="w-full h-full object-cover transition-all duration-300 hover:scale-105 hover:shadow-lg cursor-pointer"
                         />
@@ -392,19 +436,21 @@ const Profile = () => {
                     </Dialog>
                   </div>
                 ))}
-                {console.log(open)}
+                
                 {/* Add Pet Button */}
+                {userId === user._id && 
                 <Dialog open={open} onOpenChange={setopen}>
-                  <DialogTrigger asChild>
-                    <button onClick={() => { setopen(true) }} className="flex items-center justify-center p-4 bg-gray-100 rounded-lg border-2 border-dashed border-gray-300 hover:bg-gray-200 hover:shadow-lg transition-all">
-                      <span className="font-medium text-gray-700">+ Add Pet</span>
-                    </button>
-                  </DialogTrigger>
-                  <DialogContent>
-                    <PetProfileForm open={open} setopen={setopen} />
+                <DialogTrigger asChild>
+                  <button onClick={() => { setopen(true) }} className="flex items-center justify-center p-4 bg-gray-100 rounded-lg border-2 border-dashed border-gray-300 hover:bg-gray-200 hover:shadow-lg transition-all">
+                    <span className="font-medium text-gray-700">+ Add Pet</span>
+                  </button>
+                </DialogTrigger>
+                <DialogContent>
+                  <PetProfileForm open={open} setopen={setopen} />
 
-                  </DialogContent>
-                </Dialog>
+                </DialogContent>
+              </Dialog> }
+                
               </div>
             </div>
 

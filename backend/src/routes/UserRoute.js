@@ -14,6 +14,9 @@ routes.put("/upadateownerprofile/:id",isAuthenticated,userController.upadateProf
 routes.put("/upadateownerprofile/:id",isAuthenticated,userController.upadateProfileOfOwner);
 routes.post("/user/forgotpassword",userController.forgotPassword);
 routes.post("/user/resetpassword",userController.resetpassword);
+routes.get("/expertpost",userController.getAllExpertPosts);
+
+routes.post("/expert/add-post",isAuthenticated,userController.addExpertPost);
 
 // routes.post("/addprofile",userController.addProfileWithFile);
 

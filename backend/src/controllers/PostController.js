@@ -83,6 +83,10 @@ const getAllPost = async (req, res) => {
         select: "username profilePic", 
       }, })
       .populate({
+        path:'postedBy',
+        select:'username profilePic'
+      })
+      .populate({
         path: "comments",
         sort: { createdAt: -1 },
         populate: {

@@ -1,10 +1,9 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Card, CardContent } from "@/components/ui/card"
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
-import { MoreHorizontal } from "lucide-react"
 import React, { useEffect, useState } from 'react'
 import ProfileDialog from "./ProfileDialog"
-import {  useNavigate, useParams } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import axios from "axios"
 import { useDispatch, useSelector } from "react-redux"
 import { setPetData } from "@/redux/user/authSlice"
@@ -18,12 +17,12 @@ import { Label } from "@/components/ui/label"
 
 
 const PetProfile = () => {
- 
-  
+
+
   const [open, setOpen] = useState(false)
   const dispatch = useDispatch()
   const id = useParams().id
-  const { pet ,user } = useSelector((store) => store.auth);
+  const { pet, user } = useSelector((store) => store.auth);
   const { petPost } = useSelector(store => store.post);
   console.log(petPost);
 
@@ -32,7 +31,7 @@ const PetProfile = () => {
   const [adoptionStatus, setAdoptionStatus] = useState(pet?.adoptionStatus);
   const [loading, setLoading] = useState(false);
 
-  
+
   const handleStatusChange = async (checked) => {
     setAdoptionStatus(checked);
     setLoading(true);
@@ -40,8 +39,9 @@ const PetProfile = () => {
     try {
       const res = await axios.post("/Adoption/update-adoption", {
         petId: pet._id,
-        adoptionStatus: checked},
-        {withCredentials:true}
+        adoptionStatus: checked
+      },
+        { withCredentials: true }
       );
       toast.success(res.data.message)
       console.log(res.data.message);
@@ -73,10 +73,10 @@ const PetProfile = () => {
     }
   }
 
-  useEffect(()=>{
+  useEffect(() => {
     profileDetails()
-  },[])
- 
+  }, [])
+
   // const getPetPost = async () => {
   //   try {
   //     const res = await axios.get(`/posts/petpost/${pet?._id}`, { withCredentials: true });
@@ -92,7 +92,7 @@ const PetProfile = () => {
 
 
 
-  function PostImage({ src, alt ,post,img}) {
+  function PostImage({ src, alt, post, img }) {
     return (
       <>
         <Dialog>
@@ -107,7 +107,7 @@ const PetProfile = () => {
             </div>
           </DialogTrigger>
           <DialogContent>
-              <ProfileDialog post={post} img={img} />
+            <ProfileDialog post={post} img={img} />
           </DialogContent>
         </Dialog>
 
@@ -124,7 +124,7 @@ const PetProfile = () => {
             <CardContent >
               <div className="flex md:flex-row flex-col justify-between p-5 bg-gray-100 dark:bg-slate-800">
 
-               
+
                 <div className="flex flex-col items-center md:gap-20 md:flex-row ">
                   <Avatar className=" w-80 h-60 aspect-square rounded-lg  border-white shadow-lg">
                     <AvatarImage
@@ -133,7 +133,7 @@ const PetProfile = () => {
                     />
                     <AvatarFallback className="text-4xl">PP</AvatarFallback>
                   </Avatar>
-                  
+
 
                   <div className="flex flex-col text-center gap-3  md:text-left">
                     <h1 className="text-4xl font-bold my-3">{pet?.petname}</h1>
@@ -148,18 +148,17 @@ const PetProfile = () => {
                   </div>
                 </div>
                 <div className="flex flex-col items-end  gap-4">
+                  {pet?.owner._id === user._id && <> <Dialog>
+                    <DialogTrigger asChild>
+                      <button onClick={() => { setOpen(true) }} className=" bg-gray-700 w-full text-white text-sm p-2 rounded-lg hover:bg-gray-600">
+                        Edit Profile
+                      </button>
+                    </DialogTrigger>
+                    {open && <DialogContent className="flex flex-col items-center text-sm text-center w-fit">
+                      <EditPetProfile open={open} setOpen={setOpen} />
+                    </DialogContent>}
 
-                <Dialog>
-                      <DialogTrigger asChild>
-                        <button onClick={() => { setOpen(true) }} className=" bg-gray-700 w-full text-white text-sm p-2 rounded-lg hover:bg-gray-600">
-                          Edit Profile
-                        </button>
-                      </DialogTrigger>
-                      {open && <DialogContent className="flex flex-col items-center text-sm text-center w-fit">
-                        <EditPetProfile open={open} setOpen={setOpen} />
-                      </DialogContent>}
-
-                    </Dialog>
+                  </Dialog>
                     <Dialog >
                       <DialogTrigger asChild>
                         <button onClick={() => setOpen(true)} className=" bg-gray-700 w-full text-white text-sm p-2 rounded-lg hover:bg-gray-600"> Add Post  </button>
@@ -173,26 +172,22 @@ const PetProfile = () => {
 
 
                     </Dialog>
-                   
-                   
-
+                  </>
+                  }
                 </div>
-               
-
               </div>
-
-              { 
-                pet?.owner._id === user._id &&   <div className="flex gap-2 justify-center md:justify-start my-3">
-                <Label id={`switch-${pet?._id}`} >  want to set your pet for adoption?</Label>
-                <Switch  
-                  id={`switch-${pet?._id}`}
-                  checked={adoptionStatus}
-                  onCheckedChange={handleStatusChange}
-                  disabled={loading}
+              {
+                pet?.owner._id === user._id && <div className="flex gap-2 justify-center md:justify-start my-3">
+                  <Label id={`switch-${pet?._id}`} >  want to set your pet for adoption?</Label>
+                  <Switch
+                    id={`switch-${pet?._id}`}
+                    checked={adoptionStatus}
+                    onCheckedChange={handleStatusChange}
+                    disabled={loading}
                   />
                 </div>
               }
-             
+
             </CardContent>
           </Card>
           <div className="mb-8">

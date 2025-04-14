@@ -38,14 +38,8 @@ const userSchema = new Schema(
       ref:"User"
     }],
 
-    posts:{
-      type:Schema.Types.ObjectId,
-      ref:"Post"
-    },
-    profilePicture : {
-      type:String,
-
-    },
+    
+   
     //for experts only  
 
     expertise: { type: String, 
@@ -54,6 +48,9 @@ const userSchema = new Schema(
                   default:function(){return this.role==="Expert"?null:undefined;} },
     services: { type: [String], 
                 default:function(){return this.role==="Expert"?[]:undefined;} },
+    posts:  [{ type: Schema.Types.ObjectId,
+              ref:'Post' ,
+              default:function(){return this.role==="Expert"?[]:undefined;} }],
     contact:{type:String}
   },
   {

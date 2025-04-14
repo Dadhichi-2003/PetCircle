@@ -119,7 +119,7 @@ const CreatePost = ({open,setOpen}) => {
         <DialogHeader className='text-center font-semibold mb-2'>Create New Post</DialogHeader>
         <div className='flex my-3 gap-3 items-center'>
           <Avatar>
-            <AvatarImage src={pet?.profilePic} alt="img" />
+            <AvatarImage src={pet?.profilePic } alt="img" />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
           <div>

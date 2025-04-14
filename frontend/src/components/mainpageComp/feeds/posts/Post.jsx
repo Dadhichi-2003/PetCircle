@@ -24,7 +24,7 @@ const Post = ({ post }) => {
     const { user } = useSelector(store => store.auth)
     const { pet } = useSelector(store => store.auth);
     const { posts } = useSelector(store => store.post);
-
+    
     
     
     
@@ -123,12 +123,12 @@ const Post = ({ post }) => {
                 <div className='flex items-center gap-2 ' >
                     
                     <Avatar>
-                        <AvatarImage src={post?.pet?.profilePic} alt="post_image" />
+                        <AvatarImage src={post?.pet?.profilePic || post?.postedBy?.profilePic} alt="post_image" />
                         <AvatarFallback>CN</AvatarFallback>
                     </Avatar>
                     <div className='flex items-center gap-3'>
-                        <h1>{post?.pet?.petname}</h1>
-                        {user?._id === post?.pet?.owner?._id &&  <Badge variant="" className="bg-gray-500 text-gray-100 hover:bg-gray-400">Author</Badge>}
+                        <h1>{post?.pet?.petname || post?.postedBy?.username}</h1>
+                        {user?._id === (post?.pet?.owner?._id || post?.postedBy?._id) &&  <Badge variant="" className="bg-gray-500 text-gray-100 hover:bg-gray-400">Author</Badge>}
                     </div>
                    
                 </div >
@@ -142,7 +142,7 @@ const Post = ({ post }) => {
                         <Button variant='ghost' className="cursor-pointer w-fit text-[#ED4956] font-bold hover:bg-primary hover:text-[#ED4956]">Unfollow</Button>
                         <Button variant='ghost' className="cursor-pointer w-fit  hover:bg-primary hover:text-light">Add to favorites</Button>
                         {
-                            user && user?._id === post?.pet?.owner?._id && <Button variant='ghost' onClick={deletePostHandler} className="cursor-pointer w-fit  hover:bg-primary hover:text-light">Delete</Button>
+                            user && user?._id === (post?.pet?.owner?._id || post?.postedBy?._id ) && <Button variant='ghost' onClick={deletePostHandler} className="cursor-pointer w-fit  hover:bg-primary hover:text-light">Delete</Button>
                         }
 
                     </DialogContent>

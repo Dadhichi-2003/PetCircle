@@ -64,11 +64,11 @@ const ChatPage = () => {
 
 
   return (
-    <div className='flex h-screen md:ml-[20%]  w-full  '>
-      <section className='w-[50%] md:w-1/4 my-8'>
+    <div className='flex h-screen md:ml-[20%] w-full md:w-300  '>
+      <section className='w-[50%]md:w-1/4 my-8'>
         <h1 className='font-bold mb-4 px-3 text-xl'> {user?.username}</h1>
         <hr className='mb-4 border-gray-300' />
-        <div className='overflow-y-auto h-[80vh]'>
+        <div className='overflow-y-auto  h-[80vh]'>
           {
             suggestedUsers?.map((suggestedUser) => {
               const isOnline = onlineUsers?.includes(suggestedUser._id);
@@ -96,8 +96,8 @@ const ChatPage = () => {
                 selectedUser ? (
 
                   
-                      <section className='flex-1  border-l border-l-gray-300 flex flex-col h-full'>
-                        <div className='flex gap-3 items-center px-3 py-2 border-b border-gray-300 sticky top-0 bg-white z-10'>
+                      <section className=' w-full  border-l border-l-gray-300 flex flex-col h-full'>
+                        <div className='flex gap-3 items-center px-3 py-2 border-b border-gray-400 sticky top-0  bg-white z-10'>
                             <Avatar>
                                 <AvatarImage src={selectedUser?.profilePic} alt='profile' />
                                 <AvatarFallback>CN</AvatarFallback>

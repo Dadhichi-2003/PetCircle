@@ -21,6 +21,7 @@ import { setLikeNotification } from './redux/chat/rtnSlice'
 import Messages from './components/chatComp/Messages'
 import AdoptionPage from './pages/AdoptionPage'
 import CommunityProfile from './components/communityComp/CommunityProfile'
+import ExpertPage from './pages/ExpertPage'
 
 
 function App() {
@@ -87,6 +88,7 @@ function App() {
               
           
             <Route path='adoption' element={<AdoptionPage/>}/>
+            <Route path='expert' element={<ExpertPage/>}/>
            
             
             <Route path='profile/:id' element={<Profile />} >

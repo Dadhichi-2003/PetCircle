@@ -26,6 +26,7 @@ const Login = () => {
         toast.success("login succesfull !");
         console.log(login.data)
         localStorage.setItem("id", login.data.data._id);
+        localStorage.setItem("role", login.data.data.role);
         dispatch(setAuthUser(login.data.data))
        
           setTimeout(() => {

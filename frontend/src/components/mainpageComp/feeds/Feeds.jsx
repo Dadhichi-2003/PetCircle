@@ -28,11 +28,11 @@ const Feed = () => {
   return (
 
     <>
-    <div className='flex justify-around gap-10'>
-      <div className='   '>
+    <div className='flex justify-center items-center  '>
+      
         <Posts/>
-      </div>
-      <div className=' hidden md:flex md:flex-col  md:self-start'>
+      
+      <div className=' hidden md:flex md:self-start md:items-end '>
       <RightSidebar/>
       </div>
     </div>

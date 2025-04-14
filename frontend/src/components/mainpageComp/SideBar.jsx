@@ -9,6 +9,7 @@ import { setPosts, setSelectedPost } from "@/redux/post/postSlice";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Button } from "../ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { GrUserExpert } from "react-icons/gr";
 
 
 const Sidebar = () => {
@@ -50,7 +51,7 @@ const Sidebar = () => {
     { name: "Feed", icon: <FiHome />, path: "feeds" },
     { name: "Profile", icon: <FiUser />, path: `profile/${user?._id}` },
     { name: "Messages", icon: <FiMessageSquare />, path: "messages" },
-    { name: "Notifications", icon: <FiBell />, path: "feeds" },
+    { name: "expert", icon: <GrUserExpert />, path: "expert" },
     { name: "Community", icon: <FiUsers />, path: "community" },
     { name: "Adoption", icon: <FiHeart />, path: "adoption" },
     { name: "Logout", icon: <FiLogOut />, path: "/logout", action: handleLogout },

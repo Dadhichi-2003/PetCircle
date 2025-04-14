@@ -26,7 +26,8 @@ const Post = ({ post }) => {
     const { posts } = useSelector(store => store.post);
 
     
-
+    
+    
     const [liked, setLiked] = useState(post?.likes?.includes(user._id) || false)
     const [postLike, setPostLike] = useState(post?.likes?.length || 0);
     const [comment, setComment] = useState(post?.comments)

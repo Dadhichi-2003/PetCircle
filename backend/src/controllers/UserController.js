@@ -362,46 +362,46 @@ const resetpassword = async (req, res) => {
   }
 };
 
+const getAllExperts = async (req, res) => {
+  try {
+    const experts = await userModel.find({ role: "Expert" }).select("-password");
+
+    console.log(experts); // Check the experts that were fetched
+
+    if (experts.length === 0) {
+      return res.status(404).json({
+        message: "No experts found",
+        success: false,
+      });
+    }
+
+    res.status(200).json({
+      message: "Experts fetched successfully",
+      success: true,
+      data: experts,
+    });
+  } catch (err) {
+    res.status(500).json({
+      message: "Failed to fetch experts",
+      error: err.message,
+    });
+  }
+};
 
 
-
-
-// const addProfileWithFile = async (req, res) => {
-//     upload(req, res, async (err) => {
-//       if (err) {
-//         res.status(500).json({
-//           message: err.message,
-//         });
-//       } else {
-//         // database data store
-//         //cloundinary
-
-//         const cloundinaryResponse = await cloudinaryUtil.uploadFileToCloudinary(req.file);
-//         console.log(cloundinaryResponse);
-//         console.log(req.body);
-
-//         //store data in database
-//         req.body.profilePic = cloundinaryResponse.secure_url
-//         const savedProfile = await userModel.create(req.body);
-
-//         res.status(200).json({
-//           message: "profile saved successfully",
-//           data: savedProfile
-//         });
-//       }
-//     });
-//   };
 
 module.exports = {
   signUpUser,
   loginUser,
   getAllUser,
+  getAllExperts,
   getProfileById,
   logout,
   getSuggestedUsers,
   followOrUnfollow,
   upadateProfileOfOwner,
   forgotPassword,
-  resetpassword
+  resetpassword,
+ 
   // addProfileWithFile,
 };

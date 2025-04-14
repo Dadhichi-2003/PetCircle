@@ -13,12 +13,15 @@ const MainPage = () => {
 
   return (
     <>
+    <div className='flex justify-center items-center w-full '>
       <SideBar/>
-      <div className='flex justify-center items-center w-full' >
+      <div className='flex-1' >
         <Outlet/>
+      </div>
       </div>
     </>
   );
 };
+// flex justify-center items-center w-full
 
 export default MainPage;

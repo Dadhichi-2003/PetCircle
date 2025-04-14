@@ -84,7 +84,7 @@ const CommunityPage = () => {
   
   return (
     <>
-      <div className='md:flex-1 flex m-5 md:ml-60 p-5 justify-center items-center w-full '>
+      <div className=' flex m-5  p-5 justify-center items-center w-full '>
         {/* <div className=' '>
         <button type="button" className="text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Create your Community </button>
       </div> */}

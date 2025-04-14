@@ -15,7 +15,7 @@ const Posts = () => {
 
   return (
 
-    <div>
+    <div className='md:w-[60%]'>
       {
         posts
           ?.filter((post) => post?.pet !== null)

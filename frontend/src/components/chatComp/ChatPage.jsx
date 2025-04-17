@@ -8,7 +8,7 @@ import { Input } from '../ui/input';
 import { Button } from '../ui/button';
 import axios from 'axios';
 import { setMessages } from '@/redux/chat/chatSlice';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 
 const ChatPage = () => {
   const { user, suggestedUsers ,selectedUser } = useSelector(store => store.auth);
@@ -42,19 +42,33 @@ const ChatPage = () => {
   }, [socket, messages, dispatch]);
 
   const navigate = useNavigate()
-
-  useEffect(()=>{
-    return()=>{
-      dispatch(setSelectedUser(null));
-      dispatch(setMessages([])); // ✅ Also clear messages on logout
-    }
-  },[]);
+  const { userId } = useParams();
+  useEffect(() => {
+    dispatch(setSelectedUser(null));
+    dispatch(setMessages([]));
+  }, [userId]);
 
  
 
-  const handleUserClick = (suggestedUser) => {
+  const handleUserClick = async (suggestedUser) => {
     dispatch(setSelectedUser(suggestedUser));
+  
+    try {
+      const res = await axios.get(`/messages/message/${suggestedUser._id}`, {
+        withCredentials: true,
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
+  
+      if (res.data && res.data.messages) {
+        dispatch(setMessages(res.data.messages));
+      }
+    } catch (err) {
+      console.error("Failed to fetch messages:", err);
+    }
   };
+  
   
   useEffect(() => {
     if (selectedUser?._id) {
@@ -62,9 +76,18 @@ const ChatPage = () => {
     }
   }, [selectedUser, navigate]);
 
+  
 
+useEffect(() => {
+  if (userId && suggestedUsers.length > 0) {
+    const matchedUser = suggestedUsers.find(user => user._id === userId);
+    if (matchedUser) {
+      handleUserClick(matchedUser);
+    }
+  }
+}, [userId, suggestedUsers]);
   return (
-    <div className='flex h-screen md:ml-[20%] w-full md:w-300  '>
+    <div className='flex h-screen md:ml-[17%] w-full md:w-300  '>
       <section className='w-[50%]md:w-1/4 my-8'>
         <h1 className='font-bold mb-4 px-3 text-xl'> {user?.username}</h1>
         <hr className='mb-4 border-gray-300' />
@@ -74,7 +97,8 @@ const ChatPage = () => {
               const isOnline = onlineUsers?.includes(suggestedUser._id);
               return (
               
-                <div  onClick={() => handleUserClick(suggestedUser)}   className='flex gap-3 items-center p-3 hover:bg-gray-50 cursor-pointer'>
+                <div  onClick={() => handleUserClick(suggestedUser)}   className={`flex gap-3 items-center p-3 cursor-pointer transition-all
+                  ${selectedUser?._id === suggestedUser._id ? 'bg-blue-100' : 'hover:bg-gray-50'}`}>
                   <Avatar  className='w-14 h-14'>
                     <AvatarImage src={suggestedUser?.profilePic} />
                     <AvatarFallback>CN</AvatarFallback>

@@ -58,7 +58,7 @@ const Sidebar = () => {
   ];
 
   return (
-    <div className="flex relative ">
+    <div className="flex md:fixed  ">
       {/* Overlay for Mobile */}
       {isOpen && (
         <div className="fixed inset-0 bg-black opacity-50 md:hidden" onClick={closeSidebar}></div>

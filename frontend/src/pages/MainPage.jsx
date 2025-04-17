@@ -14,6 +14,7 @@ const MainPage = () => {
   return (
     <>
     <div className='flex justify-center items-center w-full '>
+      <div className='fixed'></div>
       <SideBar/>
       <div className='flex-1' >
         <Outlet/>

@@ -7,6 +7,7 @@ import { Briefcase, Calendar, MapPin, MessageCircle, Star } from 'lucide-react'
 
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
+import { Link } from 'react-router-dom'
 
 const ExpertPage = () => {
 
@@ -47,7 +48,9 @@ const ExpertPage = () => {
              <Card className="overflow-hidden m-5">
         <CardHeader className="pb-2">
         <div className="flex justify-between items-start">
+        <Link to={`/main/profile/${expert?._id}`} >
           <div className="flex items-center space-x-4">
+         
             <Avatar className="h-12 w-12">
               <AvatarImage
                 src={expert.profilePic ||  "/placeholder.svg?height=200&width=200"}
@@ -59,7 +62,9 @@ const ExpertPage = () => {
               <CardTitle className="text-lg">{expert.username}</CardTitle>
               <CardDescription>{expert.expertise}</CardDescription>
             </div>
+            
           </div>
+          </Link>
           <Badge variant="default" className="bg-green-500 hover:bg-green-600">
             Expert
           </Badge>

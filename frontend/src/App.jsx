@@ -22,6 +22,13 @@ import Messages from './components/chatComp/Messages'
 import AdoptionPage from './pages/AdoptionPage'
 import CommunityProfile from './components/communityComp/CommunityProfile'
 import ExpertPage from './pages/ExpertPage'
+import AdminDashboard from './components/adminComp/dashboard/AdminDashboard'
+import AdminOverview from './components/adminComp/AdminOverview'
+import ManageUsers from './components/adminComp/adminpages/ManageUsers'
+import ManageExperts from './components/adminComp/adminpages/ManageExperts'
+import ManagePosts from './components/adminComp/adminpages/ManagePosts'
+import ManageAdoptions from './components/adminComp/adminpages/ManageAdoptions'
+import ManageCommunities from './components/adminComp/adminpages/ManageCommunities'
 
 
 function App() {
@@ -71,11 +78,21 @@ function App() {
     <>
       <Routes>
         <Route path="/" element={<HomePage />} />
+        
         <Route path='/login' element={<Login />} />
         <Route path='/signup' element={<SignUp />} />
         <Route path='/resetpass/:token' element={<ResetPassword/>} />
         <Route path='/forgetpassword' element={<ForgotPassword/>} />
         <Route path="" element={<PrivateRoutes />}>
+          {/* admin routes */}
+          <Route path="/admin" element={<AdminDashboard />}>
+            <Route path="overview" element={<AdminOverview />} />
+            <Route path="users" element={<ManageUsers />} />
+            <Route path="experts" element={<ManageExperts />} />
+            <Route path="posts" element={<ManagePosts />} />
+            <Route path="adoptions" element={<ManageAdoptions />} />
+            <Route path="communities" element={<ManageCommunities />} />
+          </Route>
           <Route path='/main' element={<MainPage />}>
           //index element feed
             <Route index element={<Feeds />} />

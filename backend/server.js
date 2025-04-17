@@ -53,6 +53,11 @@ app.use("/community",CommunityRoutes)
 const AdoptionRoutes = require("./src/routes/AdoptionRoutes");
 app.use("/Adoption",AdoptionRoutes)
 
+
+//admin routes 
+const AdminRoutes = require("./src/routes/AdminRoutes");
+app.use("/admin",AdminRoutes)
+
 //db connection
 mongoose.connect(process.env.MONGO_URL).then(()=>{
     console.log("DataBase Connected")

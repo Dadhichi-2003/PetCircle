@@ -29,10 +29,14 @@ const Login = () => {
         localStorage.setItem("role", login.data.data.role);
         dispatch(setAuthUser(login.data.data))
        
-          setTimeout(() => {
-            navigate("/main");
-          }, 3000);
+          
+          if(login.data.data.role === 'User'||'Expert'){
+            navigate('/main')
+          }
         
+        if(login.data.data.role === 'Admin'){
+          navigate('/admin')
+        }
       }
     } catch (error) {
         console.log(error);

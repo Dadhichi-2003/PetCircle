@@ -12,7 +12,7 @@ const Messages = ({ selectedUser }) => {
     const { id } = useParams(); // Get the user ID from the URL
 
     useEffect(() => {
-
+        
     }, [id]);
 
 

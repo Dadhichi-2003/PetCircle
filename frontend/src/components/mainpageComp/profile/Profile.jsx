@@ -144,9 +144,15 @@ const Profile = () => {
 
                 <CardContent >
                   <div className="flex justify-between w-full gap-3 text-center py-3">
-
-                    <Button variant='secondary' className='w-[49%]  '>Follow</Button>
-                    <Button variant='outline' className='w-[49%] '>Message</Button>
+                    {!(userProfile._id === user?._id)  && <>
+                      {isFollowing ? 
+                      ( <Button variant='secondary' onClick={handleFollowUnfollow} className='w-[49%]  '>Unfollow</Button>):
+                      ( <Button variant='secondary' onClick={handleFollowUnfollow} className='w-[49%] bg-teal-800 hover:bg-teal-600 '>Follow</Button>)}
+                   
+                      <Button variant='outline'  className='w-[49%] ' >Message</Button>
+                    
+                    </> }
+                   
 
                   </div>
 
@@ -243,15 +249,8 @@ const Profile = () => {
 
                   <Separator className="my-4" />
 
-
-
-
-
                 </CardContent>
               </Card>
-
-
-
             </div>
 
           </div>
@@ -376,10 +375,11 @@ const Profile = () => {
 
                   ) : (
                     <>
+                    <Button variant='secondary' className='h-8 my-4 w-25' onClick={handleMessageClick} >Message</Button>
                       {isFollowing ? (
                         <>
                           <Button variant='secondary' className='h-8 my-1 w-25 bg-primary text-primary-foreground' onClick={handleFollowUnfollow} >Unfollow</Button>
-                          <Button variant='secondary' className='h-8 my-1 w-25' onClick={handleMessageClick} >Message</Button>
+                          
                         </>
                       ) : (
                         <Button className='bg-[#0095F6] hover:bg-[#3192d2] h-8' onClick={handleFollowUnfollow} >Follow</Button>

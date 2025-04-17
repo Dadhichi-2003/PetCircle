@@ -5,7 +5,8 @@ const chatSlice  = createSlice ({
     name:'chat',
     initialState:{
         onlineUsers:[],
-        messages:[]
+        messages:[],
+        selectedUser: null,
     },
     reducers:{
         //actions

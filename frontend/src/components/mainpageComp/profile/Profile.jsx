@@ -35,9 +35,9 @@ const Profile = () => {
 
   useGetUserProfile(userId)
   const { userProfile, user } = useSelector(store => store.auth);
-  console.log(userProfile)
+  // console.log(userProfile)
 
-  console.log(user)
+  // console.log(user)
 
   const handleDeletePetProfile = async (petId) => {
     try {
@@ -328,11 +328,15 @@ const Profile = () => {
               {/* Profile Picture */}
               <div className="flex flex-col md:flex-row items-center  md:items-start gap-8  pb-8">
                 <div className="relative shrink-0 ">
-                  <img
+                  <Avatar className='h-30 w-30'>
+                    <AvatarImage src={userProfile?.profilePic} className=" w-full h-full"  />
+                    <AvatarFallback> {userProfile?.username}</AvatarFallback>
+                  </Avatar>
+                  {/* <img
                     src={userProfile?.profilePic}
                     alt={userProfile?.username}
                     className="w-32 h-32 md:w-40 md:h-40 rounded-full object-cover border-4 border-gray-300 shadow-lg hover:ring-4 hover:ring-gray-500 transition-all"
-                  />
+                  /> */}
 
                 </div>
 

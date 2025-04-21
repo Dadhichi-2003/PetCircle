@@ -61,8 +61,9 @@ const EditUserProfile = ({ open, setopen }) => {
         formData.append('services', data.services || '');
         formData.append('contact', data.contact || '');
       }
-
-      if (profilePic && typeof profilePic !== 'string') {
+      console.log(profilePic);
+      
+      if (profilePic ) {
         formData.append('profilePic', profilePic);
       }
 
@@ -72,6 +73,8 @@ const EditUserProfile = ({ open, setopen }) => {
         toast.success(res.data.message);
         dispatch(setAuthUser(res.data.profile));
         dispatch(setUserProfile(res.data.profile));
+        console.log(user);
+        
         setopen(false);
       }
     } catch (err) {
@@ -96,7 +99,7 @@ const EditUserProfile = ({ open, setopen }) => {
           <form onSubmit={handleSubmit(submitHandler)}>
             <div className='flex flex-col justify-center items-center'>
               <Avatar className='size-30 shadow-2xl my-2 ring-2 ring-gray-600'>
-                <AvatarImage src={profilePic ? (typeof profilePic === 'string' ? profilePic : URL.createObjectURL(profilePic)) : user?.profilePic} />
+                <AvatarImage src={profilePic ? (typeof profilePic === 'string' ? profilePic : URL.createObjectURL(profilePic)) : user?.profilePic }  />
                 <AvatarFallback>CN</AvatarFallback>
               </Avatar>
               <button type='button' onClick={() => imageRef.current.click()} className='text-blue-600 cursor-pointer border-none'>

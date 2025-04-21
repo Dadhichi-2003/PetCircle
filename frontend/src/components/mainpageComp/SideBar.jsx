@@ -67,7 +67,7 @@ const Sidebar = () => {
       {/* Sidebar */}
       <div
         className={`fixed inset-y-0 left-0 w-64 bg-[#0D1B2A] text-[#E0E1DD] transform ${isOpen ? "translate-x-0" : "-translate-x-full"
-          } md:translate-x-0 transition-transform duration-300 ease-in-out shadow-lg h-screen`}
+          } md:translate-x-0 transition-transform duration-300 ease-in-out shadow-lg h-screen z-50 md:z-auto`}
       >
         {/* Logo Section */}
         <div className="flex justify-start items-center p-5 mt-3 border-b border-[#1B263B]">

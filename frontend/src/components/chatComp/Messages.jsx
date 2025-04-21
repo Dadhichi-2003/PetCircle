@@ -20,8 +20,11 @@ const Messages = ({ selectedUser }) => {
     useGetAllMessage()
     const { messages } = useSelector(store => store.chat);
     const { user } = useSelector(store => store.auth);
-    const loggedInUserId = localStorage.getItem('id')
+    const loggedInUserId = localStorage.getItem('id');
+
     return (
+        <>
+        
         <div className='overflow-y-auto flex-1 p-4'>
             <div className='flex justify-center'>
                 <div className='flex flex-col items-center justify-center'>
@@ -60,6 +63,7 @@ const Messages = ({ selectedUser }) => {
 
             </div>
         </div>
+        </>
     )
 }
 

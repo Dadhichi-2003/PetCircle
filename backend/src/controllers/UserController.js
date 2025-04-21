@@ -44,16 +44,18 @@ const upadateProfileOfOwner = async (req, res) => {
 
       let profilePic = profile.profilePic; // ✅ Default to existing image
 
-      if (req.file) {
-        const cloudinaryResponse = await cloudinaryUtil.uploadFileToCloudinary(req.file);
+      if (req.files && req.files["profilePic"]) {
+        const cloudinaryResponse = await cloudinaryUtil.uploadFileToCloudinary(req.files["profilePic"][0]);
         profilePic = cloudinaryResponse.secure_url;
       }
+      
 
       const { username, bio, location, expertise, experience, services, contact } = req.body;
 
-      if (req.file) {
+      if (req.files && req.files["profilePic"]) {
         profile.profilePic = profilePic;
       }
+      
 
       if (username) profile.username = username;
       if (location) profile.location = location;
@@ -64,7 +66,7 @@ const upadateProfileOfOwner = async (req, res) => {
       if (contact) profile.contact = contact;
 
       await profile.save();
-
+      await profile.populate({path:'pets' ,select:'petname profilePic'})
       return res.status(200).json({
         message: "Profile updated successfully",
         profile,
@@ -78,50 +80,6 @@ const upadateProfileOfOwner = async (req, res) => {
   });
 };
 
-
-// const editOwnerProfile = async(req,res)=>{
-
-//   upload(req, res, async (err) => {
-//     if (err) {
-//       return res.status(500).json({ message: "File upload failed", error: err.message });
-//     }
-
-//     try {
-//       // Upload file to Cloudinary 
-//       let profilePic= "";
-//       if (req.file) {
-//         const cloudinaryResponse = await cloudinaryUtil.uploadFileToCloudinary(req.file);
-//         profilePic = cloudinaryResponse.secure_url;
-//       }
-//       const userId = req.params.id
-//       const profile= await UserModel.findById(userId);
-//               if (!profile) {
-//                 return res.status(404).json({ message: "Profile not found" });
-//               }
-
-//       if(profile){
-//         profile.profilePic = profilePic
-//       }
-      
-//       profile.save()
-        
-//       return res.status(200).json({
-//         message:"profile Pic updated succesfully",
-//         profilePic
-//       })
-//     }catch(err){
-
-//       res.status(500).json({
-//         message:"profile pic not updated",
-//         error:err.message
-//       })
-//     }
-
-
-
-// }
-
-// )}
 
 
 const signUpUser = async (req, res) => {

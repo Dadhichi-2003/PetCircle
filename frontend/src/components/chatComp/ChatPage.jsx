@@ -50,24 +50,24 @@ const ChatPage = () => {
 
  
 
-  const handleUserClick = async (suggestedUser) => {
-    dispatch(setSelectedUser(suggestedUser));
-  
-    try {
-      const res = await axios.get(`/messages/message/${suggestedUser._id}`, {
-        withCredentials: true,
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        },
-      });
-  
-      if (res.data && res.data.messages) {
-        dispatch(setMessages(res.data.messages));
+    const handleUserClick = async (suggestedUser) => {
+      dispatch(setSelectedUser(suggestedUser));
+    
+      try {
+        const res = await axios.get(`/messages/message/${suggestedUser._id}`, {
+          withCredentials: true,
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        });
+    
+        if (res.data && res.data.messages) {
+          dispatch(setMessages(res.data.messages));
+        }
+      } catch (err) {
+        console.error("Failed to fetch messages:", err);
       }
-    } catch (err) {
-      console.error("Failed to fetch messages:", err);
-    }
-  };
+    };
   
   
   useEffect(() => {
